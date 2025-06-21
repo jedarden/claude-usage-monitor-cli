@@ -33,31 +33,31 @@ npm install claude-usage-cli
 
 ```bash
 # Show overall usage summary
-claude-monitor
+claude-usage-cli
 
 # Show today's usage
-claude-monitor today
+claude-usage-cli today
 
 # Show this week's usage
-claude-monitor week
+claude-usage-cli week
 
 # Show this month's usage
-claude-monitor month
+claude-usage-cli month
 
 # List all projects
-claude-monitor projects
+claude-usage-cli projects
 
 # Show specific project details
-claude-monitor project my-project-id
+claude-usage-cli project my-project-id
 
 # Use different timezone
-claude-monitor --timezone "America/New_York"
+claude-usage-cli --timezone "America/New_York"
 
 # Quiet mode (minimal output)
-claude-monitor --quiet summary
+claude-usage-cli --quiet summary
 
 # Show help
-claude-monitor --help
+claude-usage-cli --help
 ```
 
 ### Available Commands
@@ -149,7 +149,7 @@ npm test
 # Test CLI directly
 node lib/cli.js --help
 node lib/cli.js summary
-./bin/claude-monitor --version
+./bin/claude-usage-cli --version
 ```
 
 ## Configuration
@@ -161,7 +161,7 @@ node lib/cli.js summary
 ### Custom Configuration Directory
 
 ```bash
-claude-monitor --config-dir /custom/path/to/claude/config
+claude-usage-cli --config-dir /custom/path/to/claude/config
 ```
 
 ## Requirements

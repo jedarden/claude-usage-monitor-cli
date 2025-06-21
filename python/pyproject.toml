@@ -35,7 +35,7 @@ Repository = "https://github.com/your-username/claude-usage-monitor-cli"
 Issues = "https://github.com/your-username/claude-usage-monitor-cli/issues"
 
 [project.scripts]
-claude-monitor = "claude_monitor.cli:main"
+claude-usage-cli = "claude_monitor.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["claude_monitor*"]

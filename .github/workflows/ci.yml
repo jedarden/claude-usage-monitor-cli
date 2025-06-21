@@ -42,8 +42,8 @@ jobs:
     
     - name: Test CLI
       run: |
-        claude-monitor --help
-        claude-monitor --version
+        claude-usage-cli --help
+        claude-usage-cli --version
 
   test-nodejs:
     runs-on: ${{ matrix.os }}

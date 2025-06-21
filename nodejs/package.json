@@ -4,7 +4,7 @@
   "description": "Monitor Claude API usage with zero dependencies",
   "main": "lib/cli.js",
   "bin": {
-    "claude-monitor": "bin/claude-monitor"
+    "claude-usage-cli": "bin/claude-usage-cli"
   },
   "scripts": {
     "start": "node lib/cli.js",

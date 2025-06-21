@@ -9,7 +9,7 @@
 npm install -g claude-usage-cli
 
 # After installation, use anywhere:
-claude-monitor --help
+claude-usage-cli --help
 ```
 
 ### Local Development Install
@@ -39,11 +39,11 @@ npm install -g /path/to/claude-usage-cli/
 
 ```bash
 # Check installation
-claude-monitor --version
+claude-usage-cli --version
 
 # Test basic functionality
-claude-monitor --help
-claude-monitor summary
+claude-usage-cli --help
+claude-usage-cli summary
 ```
 
 ### Requirements
@@ -65,13 +65,13 @@ npm list --depth=0
 
 ```bash
 # Basic usage
-claude-monitor                    # Show summary
-claude-monitor projects           # List projects
-claude-monitor today              # Today's usage
-claude-monitor --timezone UTC     # Use UTC timezone
+claude-usage-cli                    # Show summary
+claude-usage-cli projects           # List projects
+claude-usage-cli today              # Today's usage
+claude-usage-cli --timezone UTC     # Use UTC timezone
 
 # For help
-claude-monitor --help
+claude-usage-cli --help
 ```
 
 ### Uninstallation
@@ -108,5 +108,5 @@ node --version
 ls ~/.config/claude/projects/
 
 # Use custom directory if needed
-claude-monitor --config-dir /custom/path/to/claude
+claude-usage-cli --config-dir /custom/path/to/claude
 ```
