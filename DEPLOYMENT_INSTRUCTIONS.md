@@ -70,16 +70,17 @@ npm publish
 npm publish --//registry.npmjs.org/:_authToken=YOUR_NPM_TOKEN
 ```
 
-## 🔐 Save Tokens for GitHub Actions
+## 🔐 GitHub Actions Setup ✅
 
-Once you have both tokens, add them to your GitHub repository:
+Your tokens are already configured in the Deploy environment! The GitHub Actions workflows will:
 
-1. Go to https://github.com/jedarden/claude-usage-monitor-cli/settings/secrets/actions
-2. Add two secrets:
-   - `PYPI_API_TOKEN`: Your PyPI token
-   - `NPM_TOKEN`: Your npm token
+1. Run tests on every push and pull request
+2. Automatically publish to PyPI and npm when:
+   - Code is pushed to the main branch (CI workflow)
+   - A new release is created (Publish workflow)
+   - You manually trigger the workflow
 
-This will enable automatic publishing on future releases!
+The Deploy environment ensures secure access to your PyPI and npm tokens.
 
 ## ✅ Verification
 

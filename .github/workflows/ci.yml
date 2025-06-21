@@ -73,6 +73,7 @@ jobs:
     needs: test-python
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: Deploy
     
     steps:
     - uses: actions/checkout@v3
@@ -105,6 +106,7 @@ jobs:
     needs: test-nodejs
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: Deploy
     
     steps:
     - uses: actions/checkout@v3
