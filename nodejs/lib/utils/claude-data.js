@@ -177,7 +177,8 @@ class ClaudeDataReader {
         };
 
         for (const entry of entries) {
-            if (entry.type === 'message' && entry.sender === 'assistant') {
+            // Check for assistant messages with usage data
+            if (entry.type === 'assistant' || (entry.type === 'message' && entry.sender === 'assistant')) {
                 // Extract usage information from assistant messages
                 const usage = this.extractMessageUsage(entry);
                 if (usage) {
@@ -211,25 +212,35 @@ class ClaudeDataReader {
     /**
      * Extract usage data from a single message
      */
-    extractMessageUsage(message) {
+    extractMessageUsage(entry) {
         // Look for usage information in various possible locations
-        const usage = message.usage || 
-                     message.response?.usage || 
-                     message.metadata?.usage ||
-                     message.stats;
+        const usage = entry.message?.usage ||  // Most common: message.usage
+                     entry.usage || 
+                     entry.response?.usage || 
+                     entry.metadata?.usage ||
+                     entry.stats;
 
         if (!usage) {
             return null;
         }
 
+        // Calculate total tokens including cache tokens
+        const inputTokens = usage.input_tokens || usage.inputTokens || usage.prompt_tokens || 0;
+        const outputTokens = usage.output_tokens || usage.outputTokens || usage.completion_tokens || 0;
+        const cacheCreationTokens = usage.cache_creation_input_tokens || usage.cacheCreationInputTokens || 0;
+        const cacheReadTokens = usage.cache_read_input_tokens || usage.cacheReadInputTokens || 0;
+        
+        const totalTokens = usage.total_tokens || usage.totalTokens || 
+                          (inputTokens + outputTokens + cacheCreationTokens + cacheReadTokens);
+        
         return {
-            totalTokens: usage.total_tokens || usage.totalTokens || 0,
-            inputTokens: usage.input_tokens || usage.inputTokens || usage.prompt_tokens || 0,
-            outputTokens: usage.output_tokens || usage.outputTokens || usage.completion_tokens || 0,
-            cacheCreationTokens: usage.cache_creation_input_tokens || usage.cacheCreationTokens || 0,
-            cacheReadTokens: usage.cache_read_input_tokens || usage.cacheReadTokens || 0,
-            model: message.model || message.response?.model || null,
-            timestamp: new Date(message.created_at || message.timestamp)
+            totalTokens,
+            inputTokens,
+            outputTokens,
+            cacheCreationTokens,
+            cacheReadTokens,
+            model: entry.message?.model || entry.model || entry.response?.model || null,
+            timestamp: new Date(entry.timestamp || entry.created_at || entry.message?.timestamp)
         };
     }
 
