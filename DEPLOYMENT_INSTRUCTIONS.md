@@ -89,13 +89,13 @@ After deployment, verify the packages:
 ### Python
 ```bash
 pip install claude-usage-cli
-claude-monitor --version
+claude-usage-cli --version
 ```
 
 ### Node.js
 ```bash
 npm install -g claude-usage-cli
-claude-monitor --version
+claude-usage-cli --version
 ```
 
 ## 📝 Post-Deployment

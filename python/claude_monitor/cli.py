@@ -17,17 +17,17 @@ from .utils.timezone import TimezoneHandler
 def create_parser() -> argparse.ArgumentParser:
     """Create and configure argument parser."""
     parser = argparse.ArgumentParser(
-        prog='claude-monitor',
+        prog='claude-usage-cli',
         description='Monitor Claude AI token usage with zero dependencies',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 Examples:
-  claude-monitor                                  # Monitor with Pro plan
-  claude-monitor --plan max5                      # Monitor with Max5 plan
-  claude-monitor --plan max20 --timezone US/Eastern  # Custom timezone
-  claude-monitor --once                           # Run once and exit
-  claude-monitor --summary                        # Show summary only
-  claude-monitor --info                           # Show configuration info
+  claude-usage-cli                                  # Monitor with Pro plan
+  claude-usage-cli --plan max5                      # Monitor with Max5 plan
+  claude-usage-cli --plan max20 --timezone US/Eastern  # Custom timezone
+  claude-usage-cli --once                           # Run once and exit
+  claude-usage-cli --summary                        # Show summary only
+  claude-usage-cli --info                           # Show configuration info
 
 Available plans: pro, max5, max20, custom
 Common timezones: UTC, US/Eastern, US/Pacific, Europe/London, Asia/Tokyo

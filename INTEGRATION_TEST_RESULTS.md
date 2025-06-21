@@ -24,7 +24,7 @@ claude-usage-cli/
 │   └── dist/                  # Built packages
 └── nodejs/                    # Self-contained Node.js package
     ├── package.json           # Zero-dependency package
-    ├── bin/claude-monitor     # Global CLI executable
+    ├── bin/claude-usage-cli     # Global CLI executable
     └── lib/                   # Core functionality
 ```
 
@@ -83,7 +83,7 @@ python3 -m claude_monitor --info          # ✅ Configuration info
 npm install -g .                          # ✅ SUCCESS (exists)
 
 # CLI Testing  
-claude-monitor --help                     # ✅ Node.js version active
+claude-usage-cli --help                     # ✅ Node.js version active
 ```
 
 ### ✅ **Key Features Verified**
@@ -107,7 +107,7 @@ Both packages provide the same core functionality:
 
 ### ✅ **Package Manager Coexistence**
 - **Python**: `python3 -m claude_monitor` (direct module execution)
-- **Node.js**: `claude-monitor` (global command)
+- **Node.js**: `claude-usage-cli` (global command)
 - **No Conflicts**: Both can be installed simultaneously
 
 ### ✅ **Licensing Compliance**
@@ -135,7 +135,7 @@ python3 -m claude_monitor --plan max5
 
 # Option 2: Node.js  
 npm install -g claude-usage-cli
-claude-monitor --plan max5
+claude-usage-cli --plan max5
 ```
 
 ## 📊 **Integration Success Metrics**

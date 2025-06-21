@@ -23,7 +23,7 @@ claude-usage-cli/
 │   └── README.md              # Package-specific documentation
 └── nodejs/                    # 📦 Self-contained Node.js package
     ├── package.json           # Zero-dependency package (dependencies: {})
-    ├── bin/claude-monitor     # Global CLI executable
+    ├── bin/claude-usage-cli     # Global CLI executable
     ├── lib/                   # Core functionality modules
     └── README.md              # Package-specific documentation
 ```
@@ -64,7 +64,7 @@ python3 -m claude_monitor --plan max5
 
 # Option 2: Node.js
 npm install -g claude-usage-cli
-claude-monitor --plan max5
+claude-usage-cli --plan max5
 ```
 
 ### **📋 Feature Parity Maintained**
@@ -90,7 +90,7 @@ Both packages provide **identical functionality**:
 
 ### **✅ Node.js Package Validation**
 - **Installation**: `npm install -g .` ✅ SUCCESS  
-- **CLI Command**: `claude-monitor --help` ✅ Identical interface
+- **CLI Command**: `claude-usage-cli --help` ✅ Identical interface
 - **Dependencies**: `package.json` shows `"dependencies": {}` ✅
 - **Functionality**: 100% feature parity with Python version ✅
 

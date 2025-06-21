@@ -16,16 +16,16 @@ pip install claude-usage-cli
 
 ```bash
 # Default monitoring (Pro plan)
-claude-monitor
+claude-usage-cli
 
 # Monitor with Max5 plan
-claude-monitor --plan max5
+claude-usage-cli --plan max5
 
 # Custom timezone and reset hour
-claude-monitor --plan max20 --timezone US/Eastern --reset-hour 9
+claude-usage-cli --plan max20 --timezone US/Eastern --reset-hour 9
 
 # Show help
-claude-monitor --help
+claude-usage-cli --help
 ```
 
 ## Features
@@ -43,21 +43,21 @@ claude-monitor --help
 
 ```bash
 # Basic usage
-claude-monitor                          # Start monitoring with Pro plan
-claude-monitor --plan max5              # Monitor with Max5 plan
-claude-monitor --once                   # Run once and exit
-claude-monitor --summary                # Show summary only
+claude-usage-cli                          # Start monitoring with Pro plan
+claude-usage-cli --plan max5              # Monitor with Max5 plan
+claude-usage-cli --once                   # Run once and exit
+claude-usage-cli --summary                # Show summary only
 
 # Configuration
-claude-monitor --list-plans             # Show available plans
-claude-monitor --list-timezones         # Show timezone options
-claude-monitor --info                   # Show configuration info
+claude-usage-cli --list-plans             # Show available plans
+claude-usage-cli --list-timezones         # Show timezone options
+claude-usage-cli --info                   # Show configuration info
 
 # Customization
-claude-monitor --timezone US/Pacific    # Set timezone
-claude-monitor --reset-hour 10          # Set reset hour
-claude-monitor --refresh 5              # Set refresh interval
-claude-monitor --no-color               # Disable colors
+claude-usage-cli --timezone US/Pacific    # Set timezone
+claude-usage-cli --reset-hour 10          # Set reset hour
+claude-usage-cli --refresh 5              # Set refresh interval
+claude-usage-cli --no-color               # Disable colors
 ```
 
 ## Plans Supported

@@ -26,13 +26,13 @@ This project transforms the original tool into zero-dependency CLI packages that
 ### **Option 1: Python (pip)**
 ```bash
 pip install claude-usage-cli
-claude-monitor
+claude-usage-cli
 ```
 
 ### **Option 2: Node.js (npm)**
 ```bash
 npm install -g claude-usage-cli  
-claude-monitor
+claude-usage-cli
 ```
 
 **That's it!** No additional dependencies, no complex setup, no Node.js↔Python bridges.
@@ -52,16 +52,16 @@ claude-monitor
 
 ```bash
 # Default monitoring (Pro plan)
-claude-monitor
+claude-usage-cli
 
 # Monitor with Max5 plan
-claude-monitor --plan max5
+claude-usage-cli --plan max5
 
 # Custom timezone and reset hour
-claude-monitor --plan max20 --timezone US/Eastern --reset-hour 9
+claude-usage-cli --plan max20 --timezone US/Eastern --reset-hour 9
 
 # Show help
-claude-monitor --help
+claude-usage-cli --help
 ```
 
 ## 🎯 **Why This Tool?**
@@ -79,7 +79,7 @@ python ccusage_monitor.py --plan max5
 **After**: Single command installation
 ```bash
 pip install claude-usage-cli
-claude-monitor --plan max5
+claude-usage-cli --plan max5
 ```
 
 ## 🏗️ **Architecture**

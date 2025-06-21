@@ -70,7 +70,7 @@ python3 -m pip install -e . --break-system-packages
 
 **Execute via installed command:**
 ```bash
-# The Python package creates a claude-monitor command, but Node.js takes precedence
+# The Python package creates a claude-usage-cli command, but Node.js takes precedence
 # Use direct module execution instead (Method 1)
 python3 -m claude_monitor --help
 ```
@@ -105,22 +105,22 @@ cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 **Execute the binary directly:**
 ```bash
 # Basic usage
-./bin/claude-monitor
+./bin/claude-usage-cli
 
 # With specific plan
-./bin/claude-monitor --plan max5
+./bin/claude-usage-cli --plan max5
 
 # With timezone configuration  
-./bin/claude-monitor --plan pro --timezone US/Eastern
+./bin/claude-usage-cli --plan pro --timezone US/Eastern
 
 # Show help
-./bin/claude-monitor --help
+./bin/claude-usage-cli --help
 
 # Show version
-./bin/claude-monitor --version
+./bin/claude-usage-cli --version
 
 # Examples with all options
-./bin/claude-monitor --plan max20 --reset-hour 9 --timezone Asia/Tokyo
+./bin/claude-usage-cli --plan max20 --reset-hour 9 --timezone Asia/Tokyo
 ```
 
 ### **Method 2: Global Installation**
@@ -134,9 +134,9 @@ npm install -g .
 **Execute via global command:**
 ```bash
 # Global command (takes precedence over Python version)
-claude-monitor --help
-claude-monitor --plan max5
-claude-monitor --version
+claude-usage-cli --help
+claude-usage-cli --plan max5
+claude-usage-cli --version
 ```
 
 ### **Method 3: Local Installation**
@@ -145,7 +145,7 @@ claude-monitor --version
 ```bash
 cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 npm install .
-npx claude-monitor --help
+npx claude-usage-cli --help
 ```
 
 ---
@@ -161,13 +161,13 @@ python3 -m claude_monitor
 
 # Node.js - Monitor with Max5 plan
 cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
-./bin/claude-monitor --plan max5
+./bin/claude-usage-cli --plan max5
 
 # Python - Show summary only (no continuous monitoring)
 python3 -m claude_monitor --summary
 
 # Node.js - Monitor with custom timezone
-./bin/claude-monitor --plan max20 --timezone US/Pacific
+./bin/claude-usage-cli --plan max20 --timezone US/Pacific
 ```
 
 ### **Configuration and Information Commands**
@@ -185,7 +185,7 @@ python3 -m claude_monitor --list-timezones
 
 # Node.js - Show help with examples
 cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
-./bin/claude-monitor --help
+./bin/claude-usage-cli --help
 ```
 
 ### **Advanced Usage**
@@ -200,7 +200,7 @@ python3 -m claude_monitor --plan pro --reset-hour 6 --verbose
 
 # Node.js - All options combined
 cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
-./bin/claude-monitor --plan max20 --reset-hour 9 --timezone Europe/London
+./bin/claude-usage-cli --plan max20 --reset-hour 9 --timezone Europe/London
 ```
 
 ---
@@ -217,8 +217,8 @@ python3 -m claude_monitor --help | head -5
 
 # Test Node.js package
 cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
-./bin/claude-monitor --version
-./bin/claude-monitor --help | head -5
+./bin/claude-usage-cli --version
+./bin/claude-usage-cli --help | head -5
 ```
 
 ### **Compare Package Outputs**
@@ -231,14 +231,14 @@ python3 -m claude_monitor --version
 
 echo "Node.js version:"
 cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
-./bin/claude-monitor --version
+./bin/claude-usage-cli --version
 
 # Compare help outputs
 echo "Python help:" > /tmp/python_help.txt
 python3 -m claude_monitor --help >> /tmp/python_help.txt
 
 echo "Node.js help:" > /tmp/nodejs_help.txt
-./bin/claude-monitor --help >> /tmp/nodejs_help.txt
+./bin/claude-usage-cli --help >> /tmp/nodejs_help.txt
 
 echo "Help comparison saved to /tmp/python_help.txt and /tmp/nodejs_help.txt"
 ```
@@ -268,7 +268,7 @@ Expected locations:
 ### **Package Manager Precedence**
 
 When both packages are installed globally:
-- **Global command `claude-monitor`**: Uses Node.js version
+- **Global command `claude-usage-cli`**: Uses Node.js version
 - **Direct Python execution**: Use `python3 -m claude_monitor`
 
 ### **Expected Success Indicators**
@@ -308,8 +308,8 @@ echo ""
 echo "=== Testing Node.js Package ==="
 cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 echo "Location: $(pwd)"
-echo "Version: $(./bin/claude-monitor --version)"
-echo "Help available: $(./bin/claude-monitor --help | head -1)"
+echo "Version: $(./bin/claude-usage-cli --version)"
+echo "Help available: $(./bin/claude-usage-cli --help | head -1)"
 echo ""
 
 echo "=== Test Complete ==="
@@ -340,7 +340,7 @@ chmod +x /tmp/test_binaries.sh
 
 ### **For Node.js Package:**
 - [ ] Navigate to `/workspaces/devpod-base-test/claude-usage-cli/nodejs/`
-- [ ] Execute `./bin/claude-monitor --help`
+- [ ] Execute `./bin/claude-usage-cli --help`
 - [ ] Verify version shows `1.0.0`
 - [ ] Test basic functionality (expect Claude config error - normal)
 

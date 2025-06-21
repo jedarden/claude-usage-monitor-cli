@@ -179,7 +179,7 @@ class ClaudeMonitorCLI {
     async handleProject(monitor, projectId, options) {
         if (!projectId) {
             console.error(Colors.red('Error: Project ID is required'));
-            console.error('Usage: claude-monitor project <project-id>');
+            console.error('Usage: claude-usage-cli project <project-id>');
             return 1;
         }
 
@@ -267,7 +267,7 @@ class ClaudeMonitorCLI {
         console.log(Colors.bright('Claude Usage Monitor'));
         console.log('Monitor your Claude API usage from local conversation files\n');
         
-        console.log('Usage: claude-monitor [options] [command] [args...]\n');
+        console.log('Usage: claude-usage-cli [options] [command] [args...]\n');
 
         console.log('Commands:');
         console.log('  summary                 Show overall usage summary (default)');
@@ -292,12 +292,12 @@ class ClaudeMonitorCLI {
         console.log();
 
         console.log('Examples:');
-        console.log('  claude-monitor                    # Show usage summary');
-        console.log('  claude-monitor projects           # List all projects');
-        console.log('  claude-monitor project my-proj   # Show project details');
-        console.log('  claude-monitor today              # Show today\'s usage');
-        console.log('  claude-monitor --timezone UTC     # Use UTC timezone');
-        console.log('  claude-monitor --quiet summary    # Minimal output');
+        console.log('  claude-usage-cli                    # Show usage summary');
+        console.log('  claude-usage-cli projects           # List all projects');
+        console.log('  claude-usage-cli project my-proj   # Show project details');
+        console.log('  claude-usage-cli today              # Show today\'s usage');
+        console.log('  claude-usage-cli --timezone UTC     # Use UTC timezone');
+        console.log('  claude-usage-cli --quiet summary    # Minimal output');
     }
 
     showVersion() {
