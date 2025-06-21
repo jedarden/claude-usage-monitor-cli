@@ -6,6 +6,18 @@
 [![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-14+-green.svg)](https://nodejs.org/)
 
+## 🙏 **Acknowledgments & Inspiration**
+
+This project is based on and inspired by the excellent work of **[Maciej (maciek@roboblog.eu)](https://github.com/Maciek-roboblog)** on the original **[Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor)**.
+
+### **Original Project**
+- **Repository**: [github.com/Maciek-roboblog/Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor)
+- **Author**: Maciej ([@Maciek-roboblog](https://github.com/Maciek-roboblog))
+- **License**: MIT
+
+### **What This Fork Adds**
+This project transforms the original tool into zero-dependency CLI packages that can be easily installed via pip and npm, making it more accessible while maintaining all the original functionality and adding new features.
+
 ## 🚀 **Quick Start**
 
 ### **Option 1: Python (pip)**
@@ -128,7 +140,30 @@ cd nodejs && npm pack
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-**Original work**: Based on [Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor) by Maciej
+## 🎖️ **Credits**
+
+### **Original Author**
+- **Maciej** ([@Maciek-roboblog](https://github.com/Maciek-roboblog))
+- **Email**: maciek@roboblog.eu
+- **Original Repository**: [Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor)
+
+### **Original Features Preserved**
+- Real-time token usage monitoring
+- Visual progress bars with color coding
+- Smart predictions based on usage patterns
+- Multi-plan support (Pro, Max5, Max20)
+- 5-hour billing window tracking
+- Session management and timezone handling
+
+### **Enhancements in This Version**
+- Zero external dependencies (removed ccusage, pytz, etc.)
+- Direct JSONL file reading from Claude's data directory
+- Dual distribution via pip and npm
+- Cross-platform compatibility improvements
+- Professional CLI interface with comprehensive help
+- Automated testing and quality assurance framework
+
+This project stands on the shoulders of the original work by Maciej, transforming it into a more accessible tool while maintaining the core functionality that made it valuable to the Claude AI community.
 
 ## 🤝 **Contributing**
 

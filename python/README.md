@@ -2,6 +2,10 @@
 
 Professional CLI tool for monitoring Claude AI token usage with **zero external dependencies**.
 
+## Credits & Attribution
+
+This package is based on the original **[Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor)** by **[Maciej](https://github.com/Maciek-roboblog)** (maciek@roboblog.eu). This version transforms it into a zero-dependency pip-installable package while maintaining all original functionality.
+
 ## Installation
 
 ```bash

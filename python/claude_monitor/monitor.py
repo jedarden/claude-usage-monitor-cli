@@ -358,7 +358,7 @@ class ClaudeMonitor:
             
             # Table header
             headers = ["Time", "Messages", "Tokens", "Status"]
-            widths = [15, 13, 12, 10]
+            widths = [15, 13, 13, 12]
             header_row = create_table_row(headers, widths)
             print(f"   {self.terminal.dim(header_row)}")
             print(f"   {self.terminal.dim('-' * sum(widths))}")

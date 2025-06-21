@@ -2,6 +2,10 @@
 
 A completely self-contained Node.js package for monitoring Claude API usage with **zero external dependencies**.
 
+## Credits & Attribution
+
+This package is based on the original **[Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor)** by **[Maciej](https://github.com/Maciek-roboblog)** (maciek@roboblog.eu). This version transforms it into a zero-dependency npm package while maintaining all original functionality.
+
 ## Features
 
 - 📊 **Zero Dependencies**: Pure Node.js implementation
