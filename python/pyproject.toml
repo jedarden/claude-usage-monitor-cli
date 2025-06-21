@@ -7,7 +7,7 @@ name = "claude-usage-monitor"
 version = "1.0.0"
 description = "Monitor Claude AI token usage with zero dependencies"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 authors = [{name = "Claude Usage Monitor", email = "noreply@example.com"}]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
