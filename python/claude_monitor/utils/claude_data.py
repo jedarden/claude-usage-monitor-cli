@@ -23,25 +23,93 @@ class ClaudeDataReader:
         """Get Claude configuration directory path."""
         home = os.path.expanduser("~")
         
-        # Check for the new location first
-        if os.name == 'nt':  # Windows
-            # On Windows, check AppData/claude first, then AppData/Roaming/claude
-            primary_dir = os.path.join(os.environ.get('APPDATA', home), 'claude')
-            fallback_dir = os.path.join(home, 'claude')
-        else:  # Unix-like systems
-            # On Unix, check ~/.claude first, then ~/.config/claude
-            primary_dir = os.path.join(home, '.claude')
-            fallback_dir = os.path.join(home, '.config', 'claude')
+        # List of possible Claude config directories to check
+        possible_dirs = []
         
-        # Use primary location if it exists, otherwise fallback
-        if os.path.exists(os.path.join(primary_dir, 'projects')):
-            return primary_dir
-        elif os.path.exists(os.path.join(fallback_dir, 'projects')):
-            return fallback_dir
-        else:
-            # Return primary location as default (for new installations)
-            return primary_dir
+        if os.name == 'nt':  # Windows
+            possible_dirs = [
+                os.path.join(os.environ.get('APPDATA', home), 'claude'),
+                os.path.join(os.environ.get('LOCALAPPDATA', home), 'claude'),
+                os.path.join(home, 'AppData', 'Roaming', 'claude'),
+                os.path.join(home, 'AppData', 'Local', 'claude'),
+                os.path.join(home, '.claude'),
+                os.path.join(home, '.config', 'claude'),
+            ]
+        else:  # Unix-like systems (Linux, macOS)
+            possible_dirs = [
+                os.path.join(home, '.claude'),
+                os.path.join(home, '.config', 'claude'),
+                os.path.join(home, 'Library', 'Application Support', 'claude'),  # macOS
+                os.path.join('/opt', 'claude'),
+                os.path.join('/usr', 'local', 'share', 'claude'),
+                os.path.join('/var', 'lib', 'claude'),
+            ]
+        
+        # Check each possible directory for projects folder
+        for dir_path in possible_dirs:
+            projects_path = os.path.join(dir_path, 'projects')
+            if os.path.exists(projects_path) and os.path.isdir(projects_path):
+                # Check if there are any files in the projects directory
+                if os.listdir(projects_path):
+                    return dir_path
+        
+        # If no existing directory found, return the first option as default
+        return possible_dirs[0] if possible_dirs else os.path.join(home, '.claude')
     
+    def debug_search_locations(self) -> Dict[str, Any]:
+        """Debug method to show all search locations and their status."""
+        home = os.path.expanduser("~")
+        search_results = {
+            "home_directory": home,
+            "detected_config_dir": self.config_dir,
+            "projects_dir": self.projects_dir,
+            "searched_locations": []
+        }
+        
+        # Get the same possible directories as in _get_claude_config_dir
+        if os.name == 'nt':  # Windows
+            possible_dirs = [
+                os.path.join(os.environ.get('APPDATA', home), 'claude'),
+                os.path.join(os.environ.get('LOCALAPPDATA', home), 'claude'),
+                os.path.join(home, 'AppData', 'Roaming', 'claude'),
+                os.path.join(home, 'AppData', 'Local', 'claude'),
+                os.path.join(home, '.claude'),
+                os.path.join(home, '.config', 'claude'),
+            ]
+        else:  # Unix-like systems
+            possible_dirs = [
+                os.path.join(home, '.claude'),
+                os.path.join(home, '.config', 'claude'),
+                os.path.join(home, 'Library', 'Application Support', 'claude'),
+                os.path.join('/opt', 'claude'),
+                os.path.join('/usr', 'local', 'share', 'claude'),
+                os.path.join('/var', 'lib', 'claude'),
+            ]
+        
+        # Check each location
+        for dir_path in possible_dirs:
+            projects_path = os.path.join(dir_path, 'projects')
+            status = {
+                "path": dir_path,
+                "projects_path": projects_path,
+                "exists": os.path.exists(dir_path),
+                "projects_exists": os.path.exists(projects_path),
+                "has_files": False,
+                "file_count": 0
+            }
+            
+            if os.path.exists(projects_path) and os.path.isdir(projects_path):
+                try:
+                    files = os.listdir(projects_path)
+                    status["has_files"] = len(files) > 0
+                    status["file_count"] = len(files)
+                except PermissionError:
+                    status["permission_error"] = True
+            
+            search_results["searched_locations"].append(status)
+        
+        return search_results
+
     def find_conversation_files(self) -> List[str]:
         """Find all conversation JSONL files in Claude's data directory."""
         if not os.path.exists(self.projects_dir):

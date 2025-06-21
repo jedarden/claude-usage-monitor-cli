@@ -105,6 +105,12 @@ For more timezone options, use --list-timezones
         help='List common timezone names'
     )
     
+    parser.add_argument(
+        '--debug-locations',
+        action='store_true',
+        help='Show all searched Claude data locations for debugging'
+    )
+    
     # Debug/verbose options
     parser.add_argument(
         '--verbose',
@@ -162,6 +168,57 @@ def show_plan_info():
         print(f"  Daily limit: {config['daily_limit']} conversations")
         print(f"  Description: {config['description']}")
         print()
+
+
+def show_debug_locations():
+    """Display debug information about Claude data search locations."""
+    terminal = Terminal()
+    
+    print(terminal.bold("🔍 Claude Data Location Debug"))
+    print()
+    
+    from .utils.claude_data import ClaudeDataReader
+    data_reader = ClaudeDataReader()
+    debug_info = data_reader.debug_search_locations()
+    
+    print(f"Home directory: {terminal.cyan(debug_info['home_directory'])}")
+    print(f"Detected config dir: {terminal.cyan(debug_info['detected_config_dir'])}")
+    print(f"Projects directory: {terminal.cyan(debug_info['projects_dir'])}")
+    print()
+    
+    print(terminal.bold("📁 Searched Locations:"))
+    print()
+    
+    found_any = False
+    for i, location in enumerate(debug_info['searched_locations'], 1):
+        status_color = terminal.green if location['projects_exists'] else terminal.red
+        exists_symbol = "✓" if location['projects_exists'] else "✗"
+        
+        print(f"{i}. {status_color(exists_symbol)} {location['path']}")
+        print(f"   Projects path: {location['projects_path']}")
+        print(f"   Directory exists: {location['exists']}")
+        print(f"   Projects exists: {location['projects_exists']}")
+        
+        if location['projects_exists']:
+            print(f"   Has files: {location['has_files']}")
+            print(f"   File count: {location['file_count']}")
+            if location['has_files']:
+                found_any = True
+                print(f"   {terminal.green('✓ FOUND CLAUDE DATA HERE!')}")
+        
+        if 'permission_error' in location:
+            print(f"   {terminal.warning('Permission denied accessing directory')}")
+        
+        print()
+    
+    if not found_any:
+        print(terminal.warning("❌ No Claude data found in any searched location!"))
+        print()
+        print("Possible solutions:")
+        print("1. Make sure Claude Desktop is installed and has been used")
+        print("2. Check if Claude data is in a custom location")
+        print("3. Run Claude Desktop at least once to create data files")
+        print("4. Use --config-dir to specify a custom location")
 
 
 def show_timezone_info():
@@ -337,6 +394,10 @@ def main():
     
     if args.list_timezones:
         show_timezone_info()
+        return 0
+    
+    if args.debug_locations:
+        show_debug_locations()
         return 0
     
     if args.info:
