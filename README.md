@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-14+-green.svg)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-16+-green.svg)](https://nodejs.org/)
 [![CI](https://github.com/jedarden/claude-usage-monitor-cli/workflows/CI/badge.svg)](https://github.com/jedarden/claude-usage-monitor-cli/actions)
 [![PyPI version](https://badge.fury.io/py/claude-usage-monitor.svg)](https://badge.fury.io/py/claude-usage-monitor)
 [![npm version](https://badge.fury.io/js/claude-usage-monitor.svg)](https://badge.fury.io/js/claude-usage-monitor)

@@ -166,7 +166,7 @@ claude-monitor --config-dir /custom/path/to/claude/config
 
 ## Requirements
 
-- **Node.js**: >= 14.0.0
+- **Node.js**: >= 16.0.0
 - **OS**: Linux, macOS, Windows
 - **Claude CLI**: Local conversation files in JSONL format
 
