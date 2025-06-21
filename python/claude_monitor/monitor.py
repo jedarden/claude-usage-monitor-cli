@@ -311,11 +311,12 @@ class ClaudeMonitor:
         print(f"   Time:  {elapsed_time} elapsed, {remaining_time} remaining")
         
         # Predictions for current window
-        window_pred = predictions['window']
-        if window_pred['predicted_additional'] > 0:
+        window_pred = predictions.get('window', {})
+        if window_pred and window_pred.get('predicted_additional', 0) > 0:
             print(f"   Prediction: {window_pred['predicted_total']:.1f} total "
-                  f"({window_pred['confidence']} confidence)")
-            print(f"   Burn rate: {window_pred['burn_rate_per_hour']:.1f} conversations/hour")
+                  f"({window_pred.get('confidence', 'unknown')} confidence)")
+            if 'burn_rate_per_hour' in window_pred:
+                print(f"   Burn rate: {window_pred['burn_rate_per_hour']:.1f} conversations/hour")
         
         print()
         
@@ -341,9 +342,9 @@ class ClaudeMonitor:
               f"({daily_percent:.1f}%)")
         
         # Daily prediction
-        daily_pred = predictions['daily']
-        if daily_pred['predicted_additional'] > 0:
-            print(f"   Predicted total: {daily_pred['predicted_total']} conversations")
+        daily_pred = predictions.get('daily', {})
+        if daily_pred and daily_pred.get('predicted_additional', 0) > 0:
+            print(f"   Predicted total: {daily_pred.get('predicted_total', 0)} conversations")
         
         print()
         
