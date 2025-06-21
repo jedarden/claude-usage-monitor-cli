@@ -2,12 +2,16 @@
 dist/
 build/
 *.egg-info/
+*.tgz
+*.whl
+*.tar.gz
 
 # Node.js
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 
 # Python
 __pycache__/
@@ -20,6 +24,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+test_env/
+**/test_env/
 
 # IDE
 .vscode/
