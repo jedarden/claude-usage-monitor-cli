@@ -5,8 +5,8 @@ Thank you for your interest in contributing to Claude Usage Monitor CLI\! This p
 ## Development Setup
 
 ### Prerequisites
-- Python 3.8+ for the Python package
-- Node.js 16+ for the Node.js package
+- Python 3.9+ for the Python package
+- Node.js 18+ for the Node.js package
 - Git
 
 ### Getting Started
