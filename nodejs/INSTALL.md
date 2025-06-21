@@ -6,7 +6,7 @@
 
 ```bash
 # Global installation (recommended)
-npm install -g claude-usage-monitor
+npm install -g claude-usage-cli
 
 # After installation, use anywhere:
 claude-monitor --help
@@ -16,7 +16,7 @@ claude-monitor --help
 
 ```bash
 # Clone or download the package
-cd claude-usage-monitor
+cd claude-usage-cli
 
 # Install globally from local directory
 npm install -g .
@@ -29,10 +29,10 @@ npm link
 
 ```bash
 # From packaged tarball
-npm install -g claude-usage-monitor-1.0.0.tgz
+npm install -g claude-usage-cli-1.0.0.tgz
 
 # Or install from directory
-npm install -g /path/to/claude-usage-monitor/
+npm install -g /path/to/claude-usage-cli/
 ```
 
 ### Verification
@@ -58,7 +58,7 @@ claude-monitor summary
 # Verify no external dependencies
 npm list --depth=0
 
-# Should show only claude-usage-monitor with no dependencies
+# Should show only claude-usage-cli with no dependencies
 ```
 
 ### Usage After Installation
@@ -78,7 +78,7 @@ claude-monitor --help
 
 ```bash
 # Uninstall global package
-npm uninstall -g claude-usage-monitor
+npm uninstall -g claude-usage-cli
 ```
 
 ### Troubleshooting
@@ -86,7 +86,7 @@ npm uninstall -g claude-usage-monitor
 #### Permission Issues
 ```bash
 # If you get permission errors, use:
-sudo npm install -g claude-usage-monitor
+sudo npm install -g claude-usage-cli
 
 # Or configure npm to use a different directory
 mkdir ~/.npm-global

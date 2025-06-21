@@ -19,12 +19,12 @@ This package is based on the original **[Claude-Code-Usage-Monitor](https://gith
 
 ### Global Installation
 ```bash
-npm install -g claude-usage-monitor
+npm install -g claude-usage-cli
 ```
 
 ### Local Installation
 ```bash
-npm install claude-usage-monitor
+npm install claude-usage-cli
 ```
 
 ## Usage
@@ -120,7 +120,7 @@ The monitor reads directly from Claude's local configuration:
 ## API Usage
 
 ```javascript
-const { ClaudeUsageMonitor } = require('claude-usage-monitor');
+const { ClaudeUsageMonitor } = require('claude-usage-cli');
 
 const monitor = new ClaudeUsageMonitor({
     timezone: 'UTC',

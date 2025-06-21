@@ -2,7 +2,7 @@
 
 ## 📋 **Environment Overview**
 
-**Current Environment**: `/workspaces/devpod-base-test/claude-usage-monitor-cli/`
+**Current Environment**: `/workspaces/devpod-base-test/claude-usage-cli/`
 - **Platform**: Linux (devpod container)
 - **Python**: 3.11.2
 - **Node.js**: 22.16.0
@@ -24,7 +24,7 @@ Both Python and Node.js packages are available in this environment with multiple
 
 **Navigate to Python package directory:**
 ```bash
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/python/
+cd /workspaces/devpod-base-test/claude-usage-cli/python/
 ```
 
 **Execute directly without installation:**
@@ -64,7 +64,7 @@ python3 -m claude_monitor --list-timezones
 
 **Install in development mode:**
 ```bash
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/python/
+cd /workspaces/devpod-base-test/claude-usage-cli/python/
 python3 -m pip install -e . --break-system-packages
 ```
 
@@ -79,7 +79,7 @@ python3 -m claude_monitor --help
 
 **Build and install from wheel:**
 ```bash
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/python/
+cd /workspaces/devpod-base-test/claude-usage-cli/python/
 
 # Build the package
 python3 -m build
@@ -99,7 +99,7 @@ python3 -m claude_monitor --help
 
 **Navigate to Node.js package directory:**
 ```bash
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
+cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 ```
 
 **Execute the binary directly:**
@@ -127,7 +127,7 @@ cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
 
 **Install globally (if not already installed):**
 ```bash
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
+cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 npm install -g .
 ```
 
@@ -143,7 +143,7 @@ claude-monitor --version
 
 **Install locally and execute via npx:**
 ```bash
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
+cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 npm install .
 npx claude-monitor --help
 ```
@@ -156,11 +156,11 @@ npx claude-monitor --help
 
 ```bash
 # Python - Monitor with Pro plan (default)
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/python/
+cd /workspaces/devpod-base-test/claude-usage-cli/python/
 python3 -m claude_monitor
 
 # Node.js - Monitor with Max5 plan
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
+cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 ./bin/claude-monitor --plan max5
 
 # Python - Show summary only (no continuous monitoring)
@@ -174,7 +174,7 @@ python3 -m claude_monitor --summary
 
 ```bash
 # Python - Show configuration information
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/python/
+cd /workspaces/devpod-base-test/claude-usage-cli/python/
 python3 -m claude_monitor --info
 
 # Python - List available plans
@@ -184,7 +184,7 @@ python3 -m claude_monitor --list-plans
 python3 -m claude_monitor --list-timezones
 
 # Node.js - Show help with examples
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
+cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 ./bin/claude-monitor --help
 ```
 
@@ -192,14 +192,14 @@ cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
 
 ```bash
 # Python - Monitor with custom refresh rate and no colors
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/python/
+cd /workspaces/devpod-base-test/claude-usage-cli/python/
 python3 -m claude_monitor --plan max5 --refresh 5 --no-color
 
 # Python - Verbose output with custom reset hour
 python3 -m claude_monitor --plan pro --reset-hour 6 --verbose
 
 # Node.js - All options combined
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
+cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 ./bin/claude-monitor --plan max20 --reset-hour 9 --timezone Europe/London
 ```
 
@@ -211,12 +211,12 @@ cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
 
 ```bash
 # Test Python package
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/python/
+cd /workspaces/devpod-base-test/claude-usage-cli/python/
 python3 -m claude_monitor --version
 python3 -m claude_monitor --help | head -5
 
 # Test Node.js package
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
+cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 ./bin/claude-monitor --version
 ./bin/claude-monitor --help | head -5
 ```
@@ -226,11 +226,11 @@ cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
 ```bash
 # Compare version outputs
 echo "Python version:"
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/python/
+cd /workspaces/devpod-base-test/claude-usage-cli/python/
 python3 -m claude_monitor --version
 
 echo "Node.js version:"
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
+cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 ./bin/claude-monitor --version
 
 # Compare help outputs
@@ -299,14 +299,14 @@ echo "Node.js: $(node --version)"
 echo ""
 
 echo "=== Testing Python Package ==="
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/python/
+cd /workspaces/devpod-base-test/claude-usage-cli/python/
 echo "Location: $(pwd)"
 echo "Version: $(python3 -m claude_monitor --version)"
 echo "Help available: $(python3 -m claude_monitor --help | head -1)"
 echo ""
 
 echo "=== Testing Node.js Package ==="
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/
+cd /workspaces/devpod-base-test/claude-usage-cli/nodejs/
 echo "Location: $(pwd)"
 echo "Version: $(./bin/claude-monitor --version)"
 echo "Help available: $(./bin/claude-monitor --help | head -1)"
@@ -333,13 +333,13 @@ chmod +x /tmp/test_binaries.sh
 ## 📋 **Execution Checklist**
 
 ### **For Python Package:**
-- [ ] Navigate to `/workspaces/devpod-base-test/claude-usage-monitor-cli/python/`
+- [ ] Navigate to `/workspaces/devpod-base-test/claude-usage-cli/python/`
 - [ ] Execute `python3 -m claude_monitor --help`
 - [ ] Verify version shows `1.0.0`
 - [ ] Test basic functionality (expect Claude config error - normal)
 
 ### **For Node.js Package:**
-- [ ] Navigate to `/workspaces/devpod-base-test/claude-usage-monitor-cli/nodejs/`
+- [ ] Navigate to `/workspaces/devpod-base-test/claude-usage-cli/nodejs/`
 - [ ] Execute `./bin/claude-monitor --help`
 - [ ] Verify version shows `1.0.0`
 - [ ] Test basic functionality (expect Claude config error - normal)

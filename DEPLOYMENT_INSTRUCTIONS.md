@@ -9,7 +9,7 @@ Both packages are built and ready for deployment!
 - **Wheel**: `python/dist/claude_usage_monitor-1.0.0-py3-none-any.whl`
 
 ### Node.js Package  
-- **Location**: `nodejs/claude-usage-monitor-1.0.0.tgz`
+- **Location**: `nodejs/claude-usage-cli-1.0.0.tgz`
 
 ## 🚀 Deployment Steps
 
@@ -24,7 +24,7 @@ Both packages are built and ready for deployment!
 1. Go to https://pypi.org/manage/account/
 2. Scroll to "API tokens" section
 3. Click "Add API token"
-4. Name: "claude-usage-monitor"
+4. Name: "claude-usage-cli"
 5. Scope: "Entire account" (for first upload)
 6. Copy the token (starts with `pypi-`)
 
@@ -88,13 +88,13 @@ After deployment, verify the packages:
 
 ### Python
 ```bash
-pip install claude-usage-monitor
+pip install claude-usage-cli
 claude-monitor --version
 ```
 
 ### Node.js
 ```bash
-npm install -g claude-usage-monitor
+npm install -g claude-usage-cli
 claude-monitor --version
 ```
 
@@ -107,12 +107,12 @@ claude-monitor --version
    ```
 
 2. The packages will be available at:
-   - PyPI: https://pypi.org/project/claude-usage-monitor/
-   - npm: https://www.npmjs.com/package/claude-usage-monitor
+   - PyPI: https://pypi.org/project/claude-usage-cli/
+   - npm: https://www.npmjs.com/package/claude-usage-cli
 
 ## ⚠️ Important Notes
 
-- The package name `claude-usage-monitor` must be available on both platforms
+- The package name `claude-usage-cli` must be available on both platforms
 - If the name is taken, you'll need to update the package names in:
   - `python/pyproject.toml`
   - `nodejs/package.json`

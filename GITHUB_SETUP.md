@@ -12,7 +12,7 @@ Your repository is initialized and ready to be pushed to GitHub!
 
 ### 1. Create a New Repository on GitHub
 1. Go to https://github.com/new
-2. Name: `claude-usage-monitor-cli`
+2. Name: `claude-usage-cli`
 3. Description: "Professional CLI tool for monitoring Claude AI token usage - Zero dependencies, easy installation"
 4. **IMPORTANT**: Choose "No" for "Initialize this repository with a README" (we already have one)
 5. Click "Create repository"
@@ -22,7 +22,7 @@ After creating the empty repository on GitHub, run these commands:
 
 ```bash
 # Add your GitHub repository as the remote origin
-git remote add origin https://github.com/jedarden/claude-usage-monitor-cli.git
+git remote add origin https://github.com/jedarden/claude-usage-cli.git
 
 # Push all commits to GitHub
 git push -u origin main

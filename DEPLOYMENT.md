@@ -3,12 +3,12 @@
 This repository is ready for deployment to GitHub. Here's what you need to do:
 
 ## 1. Create GitHub Repository
-Create a new repository on GitHub named `claude-usage-monitor-cli`
+Create a new repository on GitHub named `claude-usage-cli`
 
 ## 2. Push to GitHub
 ```bash
-cd /workspaces/devpod-base-test/claude-usage-monitor-cli
-git remote add origin https://github.com/YOUR_USERNAME/claude-usage-monitor-cli.git
+cd /workspaces/devpod-base-test/claude-usage-cli
+git remote add origin https://github.com/YOUR_USERNAME/claude-usage-cli.git
 git push -u origin main
 ```
 
@@ -31,7 +31,7 @@ git push origin v1.0.0
 
 ## Repository Structure
 ```
-claude-usage-monitor-cli/
+claude-usage-cli/
 ├── .github/workflows/      # GitHub Actions CI/CD
 ├── python/                 # Python package source
 ├── nodejs/                 # Node.js package source  
