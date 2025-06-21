@@ -14,7 +14,7 @@ Thank you for your interest in contributing to Claude Usage Monitor CLI\! This p
 1. Fork the repository
 2. Clone your fork:
    ```bash
-   git clone https://github.com/your-username/claude-usage-monitor-cli.git
+   git clone https://github.com/YOUR-USERNAME/claude-usage-monitor-cli.git
    cd claude-usage-monitor-cli
    ```
 

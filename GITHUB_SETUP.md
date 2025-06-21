@@ -22,16 +22,14 @@ After creating the empty repository on GitHub, run these commands:
 
 ```bash
 # Add your GitHub repository as the remote origin
-git remote add origin https://github.com/YOUR_USERNAME/claude-usage-monitor-cli.git
+git remote add origin https://github.com/jedarden/claude-usage-monitor-cli.git
 
 # Push all commits to GitHub
 git push -u origin main
 ```
 
-### 3. Update README Badges
-Edit README.md and replace `your-username` with your actual GitHub username in these lines:
-- Line 8: CI badge URL
-- Line 8: CI actions URL
+### 3. README Badges
+✅ Already updated with your GitHub username (jedarden)
 
 ### 4. Configure Repository Settings (Optional)
 On GitHub, go to Settings and configure:
