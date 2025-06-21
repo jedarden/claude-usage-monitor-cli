@@ -8,9 +8,41 @@ const os = require('os');
 
 class ClaudeDataReader {
     constructor(options = {}) {
-        this.baseDir = options.baseDir || path.join(os.homedir(), '.config', 'claude', 'projects');
+        this.baseDir = options.baseDir || this._getClaudeProjectsDir();
         this.cache = new Map();
         this.cacheTimeout = options.cacheTimeout || 5 * 60 * 1000; // 5 minutes
+    }
+
+    /**
+     * Get Claude projects directory path
+     * @private
+     */
+    _getClaudeProjectsDir() {
+        const home = os.homedir();
+        
+        // Define primary and fallback locations based on platform
+        let primaryDir, fallbackDir;
+        
+        if (process.platform === 'win32') {
+            // On Windows, check AppData/claude first
+            const appData = process.env.APPDATA || path.join(home, 'AppData', 'Roaming');
+            primaryDir = path.join(appData, 'claude', 'projects');
+            fallbackDir = path.join(home, 'claude', 'projects');
+        } else {
+            // On Unix-like systems, check ~/.claude first, then ~/.config/claude
+            primaryDir = path.join(home, '.claude', 'projects');
+            fallbackDir = path.join(home, '.config', 'claude', 'projects');
+        }
+        
+        // Use primary location if it exists, otherwise fallback
+        if (fs.existsSync(primaryDir)) {
+            return primaryDir;
+        } else if (fs.existsSync(fallbackDir)) {
+            return fallbackDir;
+        } else {
+            // Return primary location as default (for new installations)
+            return primaryDir;
+        }
     }
 
     /**

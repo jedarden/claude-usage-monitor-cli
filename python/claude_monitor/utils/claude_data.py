@@ -22,11 +22,25 @@ class ClaudeDataReader:
     def _get_claude_config_dir(self) -> str:
         """Get Claude configuration directory path."""
         home = os.path.expanduser("~")
+        
+        # Check for the new location first
         if os.name == 'nt':  # Windows
-            config_dir = os.path.join(os.environ.get('APPDATA', home), 'claude')
+            # On Windows, check AppData/claude first, then AppData/Roaming/claude
+            primary_dir = os.path.join(os.environ.get('APPDATA', home), 'claude')
+            fallback_dir = os.path.join(home, 'claude')
         else:  # Unix-like systems
-            config_dir = os.path.join(home, '.config', 'claude')
-        return config_dir
+            # On Unix, check ~/.claude first, then ~/.config/claude
+            primary_dir = os.path.join(home, '.claude')
+            fallback_dir = os.path.join(home, '.config', 'claude')
+        
+        # Use primary location if it exists, otherwise fallback
+        if os.path.exists(os.path.join(primary_dir, 'projects')):
+            return primary_dir
+        elif os.path.exists(os.path.join(fallback_dir, 'projects')):
+            return fallback_dir
+        else:
+            # Return primary location as default (for new installations)
+            return primary_dir
     
     def find_conversation_files(self) -> List[str]:
         """Find all conversation JSONL files in Claude's data directory."""
