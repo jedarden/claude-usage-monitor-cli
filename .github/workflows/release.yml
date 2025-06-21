@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        body: |
+          ## Claude Usage Monitor CLI ${{ github.ref_name }}
+          
+          ### Installation
+          
+          **Python (pip)**:
+          ```bash
+          pip install claude-usage-monitor
+          ```
+          
+          **Node.js (npm)**:
+          ```bash
+          npm install -g claude-usage-monitor
+          ```
+          
+          ### What's Changed
+          Please see the [changelog](CHANGELOG.md) for details.
+          
+          ### Credits
+          Based on the original [Claude-Code-Usage-Monitor](https://github.com/Maciek-roboblog/Claude-Code-Usage-Monitor) by Maciej.
