@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "claude-usage-monitor"
+version = "1.0.0"
+description = "Monitor Claude AI token usage with zero dependencies"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Claude Usage Monitor", email = "noreply@example.com"}]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+    "Topic :: Utilities",
+]
+keywords = ["claude", "api", "usage", "monitoring", "cli", "token"]
+requires-python = ">=3.7"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/your-username/claude-usage-monitor-cli"
+Repository = "https://github.com/your-username/claude-usage-monitor-cli"
+Issues = "https://github.com/your-username/claude-usage-monitor-cli/issues"
+
+[project.scripts]
+claude-monitor = "claude_monitor.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["claude_monitor*"]
+
+[tool.setuptools.package-data]
+claude_monitor = ["py.typed"]

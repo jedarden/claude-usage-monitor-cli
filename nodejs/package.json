@@ -1,0 +1,27 @@
+{
+  "name": "claude-usage-monitor",
+  "version": "1.0.0",
+  "description": "Monitor Claude API usage with zero dependencies",
+  "main": "lib/cli.js",
+  "bin": {
+    "claude-monitor": "bin/claude-monitor"
+  },
+  "scripts": {
+    "start": "node lib/cli.js",
+    "test": "node test/test.js"
+  },
+  "keywords": [
+    "claude",
+    "api",
+    "usage",
+    "monitoring",
+    "cli"
+  ],
+  "author": "Claude Usage Monitor",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

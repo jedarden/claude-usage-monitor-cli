@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+/**
+ * Claude Usage Monitor - Executable binary
+ */
+
+// Add the lib directory to the require path
+const path = require('path');
+const libPath = path.join(__dirname, '..', 'lib');
+
+// Require and run the CLI
+const { ClaudeMonitorCLI } = require(path.join(libPath, 'cli.js'));
+
+const cli = new ClaudeMonitorCLI();
+cli.run().then(exitCode => {
+    process.exit(exitCode);
+}).catch(error => {
+    console.error(`Fatal error: ${error.message}`);
+    process.exit(1);
+});
