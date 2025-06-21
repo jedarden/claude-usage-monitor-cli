@@ -14,8 +14,8 @@ Thank you for your interest in contributing to Claude Usage Monitor CLI\! This p
 1. Fork the repository
 2. Clone your fork:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/claude-usage-cli.git
-   cd claude-usage-cli
+   git clone https://github.com/YOUR-USERNAME/claude-token-monitor.git
+   cd claude-token-monitor
    ```
 
 3. Create a branch for your feature:

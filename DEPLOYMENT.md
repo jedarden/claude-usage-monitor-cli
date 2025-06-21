@@ -3,12 +3,12 @@
 This repository is ready for deployment to GitHub. Here's what you need to do:
 
 ## 1. Create GitHub Repository
-Create a new repository on GitHub named `claude-usage-cli`
+Create a new repository on GitHub named `claude-token-monitor`
 
 ## 2. Push to GitHub
 ```bash
-cd /workspaces/devpod-base-test/claude-usage-cli
-git remote add origin https://github.com/YOUR_USERNAME/claude-usage-cli.git
+cd /workspaces/devpod-base-test/claude-token-monitor
+git remote add origin https://github.com/YOUR_USERNAME/claude-token-monitor.git
 git push -u origin main
 ```
 
@@ -31,7 +31,7 @@ git push origin v1.0.0
 
 ## Repository Structure
 ```
-claude-usage-cli/
+claude-token-monitor/
 ├── .github/workflows/      # GitHub Actions CI/CD
 ├── python/                 # Python package source
 ├── nodejs/                 # Node.js package source  

@@ -68,7 +68,7 @@ names=(
     "claude-usage-tracker"
     "claude-token-monitor"
     "claude-api-monitor"
-    "claude-usage-cli"
+    "claude-token-monitor"
     "claude-usage"
     "claudetrack"
     "claude-tracker"

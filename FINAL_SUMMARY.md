@@ -8,10 +8,10 @@ Successfully transformed the Claude-Code-Usage-Monitor from a complex multi-depe
 
 ## 🏗️ **Repository Overview**
 
-**Location**: `/workspaces/devpod-base-test/claude-usage-cli/`
+**Location**: `/workspaces/devpod-base-test/claude-token-monitor/`
 
 ```
-claude-usage-cli/
+claude-token-monitor/
 ├── LICENSE                    # MIT License (inherited from original)
 ├── README.md                  # Comprehensive project documentation
 ├── CONTRIBUTING.md            # Contribution guidelines
@@ -59,11 +59,11 @@ python ccusage_monitor.py --plan max5
 **After (Simple - <30 seconds, 1 step):**
 ```bash
 # Option 1: Python
-pip install claude-usage-cli
+pip install claude-token-monitor
 python3 -m claude_monitor --plan max5
 
 # Option 2: Node.js
-npm install -g claude-usage-cli
+npm install -g claude-token-monitor
 claude-monitor --plan max5
 ```
 
@@ -85,7 +85,7 @@ Both packages provide **identical functionality**:
 ### **✅ Python Package Validation**
 - **Installation**: `pip install -e . --break-system-packages` ✅ SUCCESS
 - **CLI Command**: `python3 -m claude_monitor --help` ✅ Comprehensive help
-- **Dependencies**: `pip show claude-usage-cli` shows "Requires: " (empty) ✅
+- **Dependencies**: `pip show claude-token-monitor` shows "Requires: " (empty) ✅
 - **Functionality**: All original features preserved ✅
 
 ### **✅ Node.js Package Validation**

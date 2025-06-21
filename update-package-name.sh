@@ -4,9 +4,9 @@
 set -e
 
 OLD_NAME="claude-usage-monitor"
-NEW_NAME="claude-usage-cli"
+NEW_NAME="claude-token-monitor"
 OLD_REPO="claude-usage-monitor-cli"
-NEW_REPO="claude-usage-cli"
+NEW_REPO="claude-token-monitor"
 
 echo "📝 Updating package name from $OLD_NAME to $NEW_NAME"
 echo "===================================================="
