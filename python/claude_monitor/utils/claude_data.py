@@ -47,15 +47,23 @@ class ClaudeDataReader:
         if not os.path.exists(self.projects_dir):
             return []
         
-        # Look for conversation files in project directories
-        pattern = os.path.join(self.projects_dir, "*", "conversations", "*.jsonl")
-        files = glob.glob(pattern)
+        files = []
         
-        # Also check for direct conversation files
+        # Look for JSONL files directly in project directories (most common)
+        pattern = os.path.join(self.projects_dir, "*", "*.jsonl")
+        files.extend(glob.glob(pattern))
+        
+        # Also check for conversation subdirectories
+        conv_pattern = os.path.join(self.projects_dir, "*", "conversations", "*.jsonl")
+        files.extend(glob.glob(conv_pattern))
+        
+        # And direct conversation files
         direct_pattern = os.path.join(self.projects_dir, "conversations", "*.jsonl")
         files.extend(glob.glob(direct_pattern))
         
-        return sorted(files, key=os.path.getmtime, reverse=True)
+        # Remove duplicates and sort by modification time
+        unique_files = list(set(files))
+        return sorted(unique_files, key=os.path.getmtime, reverse=True)
     
     def read_conversation_file(self, file_path: str) -> List[Dict[str, Any]]:
         """Read and parse a JSONL conversation file."""
@@ -85,6 +93,12 @@ class ClaudeDataReader:
         """Extract usage data from a conversation entry."""
         # Look for usage information in various locations
         usage_data = {}
+        
+        # Check for message field with usage (most common in Claude logs)
+        if 'message' in conversation and isinstance(conversation['message'], dict):
+            message = conversation['message']
+            if 'usage' in message and isinstance(message['usage'], dict):
+                usage_data.update(message['usage'])
         
         # Check for direct usage field
         if 'usage' in conversation:
@@ -121,10 +135,18 @@ class ClaudeDataReader:
             usage_data['timestamp'] = timestamp
             
         # Extract conversation ID if available
-        for id_field in ['id', 'conversation_id', 'uuid']:
+        for id_field in ['id', 'conversation_id', 'uuid', 'sessionId']:
             if id_field in conversation:
                 usage_data['conversation_id'] = conversation[id_field]
                 break
+        
+        # Calculate total tokens if not present
+        if 'total_tokens' not in usage_data and ('input_tokens' in usage_data or 'output_tokens' in usage_data):
+            input_tokens = usage_data.get('input_tokens', 0)
+            output_tokens = usage_data.get('output_tokens', 0)
+            cache_creation = usage_data.get('cache_creation_input_tokens', 0)
+            cache_read = usage_data.get('cache_read_input_tokens', 0)
+            usage_data['total_tokens'] = input_tokens + output_tokens + cache_creation + cache_read
         
         return usage_data if usage_data else None
     
@@ -277,7 +299,9 @@ class ClaudeDataReader:
                     'total_input_tokens': 0,
                     'total_output_tokens': 0,
                     'total_tokens': 0,
+                    'message_count': 0,
                     'conversation_count': 0,
+                    'unique_conversations': set(),
                     'entries': []
                 }
             
@@ -285,8 +309,20 @@ class ClaudeDataReader:
             block['total_input_tokens'] += entry.get('input_tokens', 0)
             block['total_output_tokens'] += entry.get('output_tokens', 0)
             block['total_tokens'] += entry.get('total_tokens', 0) or (entry.get('input_tokens', 0) + entry.get('output_tokens', 0))
-            block['conversation_count'] += 1
+            block['message_count'] += 1
+            
+            # Track unique conversations
+            conv_id = entry.get('conversation_id')
+            if conv_id:
+                block['unique_conversations'].add(conv_id)
+            
             block['entries'].append(entry)
+        
+        # Calculate conversation counts from unique conversations
+        for block in blocks.values():
+            block['conversation_count'] = len(block['unique_conversations'])
+            # Remove the set before returning (not JSON serializable)
+            del block['unique_conversations']
         
         # Convert to sorted list
         sorted_blocks = sorted(blocks.values(), key=lambda x: x['block_start'], reverse=True)

@@ -21,9 +21,9 @@ class PlanConfig:
     PLANS = {
         'pro': {
             'name': 'Claude Pro',
-            'limit_per_5h': 40,
-            'daily_limit': 200,
-            'description': 'Claude Pro plan - 40 messages per 5 hours'
+            'limit_per_5h': 1000,  # More realistic for API messages
+            'daily_limit': 5000,
+            'description': 'Claude Pro plan - High message limits'
         },
         'max5': {
             'name': 'Claude Max (5 messages)',
@@ -113,13 +113,13 @@ class UsagePredictor:
                 'average_per_block': 0
             }
         
-        # Calculate current total
-        current_total = sum(block.get('total_tokens', 0) for block in usage_blocks)
+        # Calculate current total conversations (not tokens)
+        current_total = sum(block.get('conversation_count', 0) for block in usage_blocks)
         
-        # Calculate average per active block
-        active_blocks = [b for b in usage_blocks if b.get('total_tokens', 0) > 0]
+        # Calculate average conversations per active block
+        active_blocks = [b for b in usage_blocks if b.get('conversation_count', 0) > 0]
         if active_blocks:
-            avg_per_block = sum(b.get('total_tokens', 0) for b in active_blocks) / len(active_blocks)
+            avg_per_block = sum(b.get('conversation_count', 0) for b in active_blocks) / len(active_blocks)
         else:
             avg_per_block = 0
         
@@ -193,11 +193,14 @@ class ClaudeMonitor:
         # Find current window usage
         current_window_usage = 0
         current_window_conversations = 0
+        current_window_tokens = 0
         
         for block in usage_blocks:
             if block['block_start'] <= now < block['block_end']:
-                current_window_usage = block['total_tokens']
+                # The limit is in conversations, not tokens
+                current_window_usage = block['conversation_count']
                 current_window_conversations = block['conversation_count']
+                current_window_tokens = block['total_tokens']
                 break
         
         # Calculate time elapsed in current window
@@ -229,8 +232,9 @@ class ClaudeMonitor:
                 'limit': self.plan_config['limit_per_5h']
             },
             'daily': {
-                'total_usage': sum(block.get('total_tokens', 0) for block in usage_blocks),
+                'total_usage': sum(block.get('conversation_count', 0) for block in usage_blocks),
                 'total_conversations': sum(block.get('conversation_count', 0) for block in usage_blocks),
+                'total_tokens': sum(block.get('total_tokens', 0) for block in usage_blocks),
                 'limit': self.plan_config['daily_limit'],
                 'blocks': usage_blocks
             },
@@ -302,7 +306,7 @@ class ClaudeMonitor:
         else:
             colored_bar = self.terminal.red(bar)
         
-        print(f"   Usage: [{colored_bar}] {window_usage}/{window_limit} "
+        print(f"   API Messages: [{colored_bar}] {window_usage}/{window_limit} "
               f"({window_percent:.1f}%)")
         
         # Time elapsed
@@ -313,10 +317,10 @@ class ClaudeMonitor:
         # Predictions for current window
         window_pred = predictions.get('window', {})
         if window_pred and window_pred.get('predicted_additional', 0) > 0:
-            print(f"   Prediction: {window_pred['predicted_total']:.1f} total "
+            print(f"   Prediction: {window_pred['predicted_total']:.1f} total messages "
                   f"({window_pred.get('confidence', 'unknown')} confidence)")
             if 'burn_rate_per_hour' in window_pred:
-                print(f"   Burn rate: {window_pred['burn_rate_per_hour']:.1f} conversations/hour")
+                print(f"   Burn rate: {window_pred['burn_rate_per_hour']:.1f} messages/hour")
         
         print()
         
@@ -338,13 +342,13 @@ class ClaudeMonitor:
         else:
             colored_daily_bar = self.terminal.red(daily_bar)
         
-        print(f"   Usage: [{colored_daily_bar}] {daily_usage}/{daily_limit} "
+        print(f"   API Messages: [{colored_daily_bar}] {daily_usage}/{daily_limit} "
               f"({daily_percent:.1f}%)")
         
         # Daily prediction
         daily_pred = predictions.get('daily', {})
         if daily_pred and daily_pred.get('predicted_additional', 0) > 0:
-            print(f"   Predicted total: {daily_pred.get('predicted_total', 0)} conversations")
+            print(f"   Predicted total: {daily_pred.get('predicted_total', 0)} messages")
         
         print()
         
@@ -353,7 +357,7 @@ class ClaudeMonitor:
             print(self.terminal.bold("📈 Recent Activity (5-hour blocks)"))
             
             # Table header
-            headers = ["Time", "Conversations", "Tokens", "Status"]
+            headers = ["Time", "Messages", "Tokens", "Status"]
             widths = [15, 13, 12, 10]
             header_row = create_table_row(headers, widths)
             print(f"   {self.terminal.dim(header_row)}")
