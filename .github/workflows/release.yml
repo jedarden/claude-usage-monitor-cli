@@ -28,12 +28,12 @@ jobs:
           
           **Python (pip)**:
           ```bash
-          pip install claude-token-monitor
+          pip install claude-usage-cli
           ```
           
           **Node.js (npm)**:
           ```bash
-          npm install -g claude-token-monitor
+          npm install -g claude-usage-cli
           ```
           
           ### What's Changed

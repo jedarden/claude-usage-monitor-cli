@@ -5,9 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-16+-green.svg)](https://nodejs.org/)
-[![CI](https://github.com/jedarden/claude-token-monitor/workflows/CI/badge.svg)](https://github.com/jedarden/claude-token-monitor/actions)
-[![PyPI version](https://badge.fury.io/py/claude-token-monitor.svg)](https://badge.fury.io/py/claude-token-monitor)
-[![npm version](https://badge.fury.io/js/claude-token-monitor.svg)](https://badge.fury.io/js/claude-token-monitor)
+[![CI](https://github.com/jedarden/claude-usage-cli/workflows/CI/badge.svg)](https://github.com/jedarden/claude-usage-cli/actions)
+[![PyPI version](https://badge.fury.io/py/claude-usage-cli.svg)](https://badge.fury.io/py/claude-usage-cli)
+[![npm version](https://badge.fury.io/js/claude-usage-cli.svg)](https://badge.fury.io/js/claude-usage-cli)
 
 ## 🙏 **Acknowledgments & Inspiration**
 
@@ -25,13 +25,13 @@ This project transforms the original tool into zero-dependency CLI packages that
 
 ### **Option 1: Python (pip)**
 ```bash
-pip install claude-token-monitor
+pip install claude-usage-cli
 claude-monitor
 ```
 
 ### **Option 2: Node.js (npm)**
 ```bash
-npm install -g claude-token-monitor  
+npm install -g claude-usage-cli  
 claude-monitor
 ```
 
@@ -78,7 +78,7 @@ python ccusage_monitor.py --plan max5
 
 **After**: Single command installation
 ```bash
-pip install claude-token-monitor
+pip install claude-usage-cli
 claude-monitor --plan max5
 ```
 
@@ -114,7 +114,7 @@ Both packages:
 
 ### **Repository Structure**
 ```
-claude-token-monitor/
+claude-usage-cli/
 ├── python/              # Python package source
 │   ├── claude_monitor/
 │   │   ├── cli.py      # CLI interface
@@ -178,8 +178,8 @@ This project stands on the shoulders of the original work by Maciej, transformin
 
 ## 🐛 **Issues & Support**
 
-- **Issues**: [GitHub Issues](https://github.com/jedarden/claude-token-monitor/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/jedarden/claude-token-monitor/discussions)
+- **Issues**: [GitHub Issues](https://github.com/jedarden/claude-usage-cli/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/jedarden/claude-usage-cli/discussions)
 
 ---
 

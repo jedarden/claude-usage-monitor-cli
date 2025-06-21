@@ -1,5 +1,5 @@
 {
-  "name": "claude-token-monitor",
+  "name": "claude-usage-cli",
   "version": "1.0.0",
   "description": "Monitor Claude API usage with zero dependencies",
   "main": "lib/cli.js",

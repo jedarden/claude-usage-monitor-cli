@@ -5,7 +5,7 @@
 - **Python**: 3.11.2 ✅
 - **Node.js**: 22.16.0 ✅
 - **Platform**: Linux (devpod container)
-- **Repository**: `/workspaces/devpod-base-test/claude-token-monitor/`
+- **Repository**: `/workspaces/devpod-base-test/claude-usage-cli/`
 
 ## 🎯 **Integration Summary**
 
@@ -13,7 +13,7 @@ Both packages have been successfully created as **completely self-contained** ap
 
 ### ✅ **Repository Structure Created**
 ```
-claude-token-monitor/
+claude-usage-cli/
 ├── LICENSE                    # MIT License (inherited)
 ├── README.md                  # Comprehensive documentation
 ├── CONTRIBUTING.md            # Contribution guidelines
@@ -130,11 +130,11 @@ python ccusage_monitor.py --plan max5
 ### **After (Simple - 1 step)**
 ```bash
 # Option 1: Python
-pip install claude-token-monitor
+pip install claude-usage-cli
 python3 -m claude_monitor --plan max5
 
 # Option 2: Node.js  
-npm install -g claude-token-monitor
+npm install -g claude-usage-cli
 claude-monitor --plan max5
 ```
 

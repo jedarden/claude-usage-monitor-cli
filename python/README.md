@@ -9,7 +9,7 @@ This package is based on the original **[Claude-Code-Usage-Monitor](https://gith
 ## Installation
 
 ```bash
-pip install claude-token-monitor
+pip install claude-usage-cli
 ```
 
 ## Quick Start
@@ -96,7 +96,7 @@ This package uses only Python's built-in libraries:
 ```bash
 # Clone repository
 git clone <repository-url>
-cd claude-token-monitor/python
+cd claude-usage-cli/python
 
 # Install in development mode
 pip install -e .
