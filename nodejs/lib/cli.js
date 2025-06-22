@@ -220,7 +220,29 @@ class ClaudeMonitorCLI {
             else if (parseFloat(windowPercent) < 80) coloredWindowBar = Colors.yellow(windowBar);
             else coloredWindowBar = Colors.red(windowBar);
             
-            console.log(`   API Messages: [${coloredWindowBar}] ${Math.floor(totals.requestCount / 5)}/${windowLimit} (${windowPercent}%)`);
+            const currentWindowMessages = Math.floor(totals.requestCount / 5);
+            console.log(`   API Messages: [${coloredWindowBar}] ${currentWindowMessages}/${windowLimit} (${windowPercent}%)`);
+            
+            // Calculate burn rate and predictions
+            const burnRatePerHour = totals.requestCount / 24; // Simplified: total requests over 24 hours
+            if (burnRatePerHour > 0) {
+                console.log(`   Burn rate: ${burnRatePerHour.toFixed(1)} messages/hour`);
+                
+                // Time to hit window limit
+                if (currentWindowMessages < windowLimit) {
+                    const messagesRemaining = windowLimit - currentWindowMessages;
+                    const hoursToLimit = messagesRemaining / burnRatePerHour;
+                    if (hoursToLimit < 24) {
+                        const timeToLimit = hoursToLimit < 1 
+                            ? `${Math.floor(hoursToLimit * 60)}m`
+                            : `${Math.floor(hoursToLimit)}h ${Math.floor((hoursToLimit % 1) * 60)}m`;
+                        console.log(`   Est. limit reached: ${timeToLimit}`);
+                    }
+                }
+            }
+            
+            // Window reset time (approximately 5 hours from start)
+            console.log(`   Window resets in: ~5h`);
             console.log();
             
             // Daily summary
@@ -234,7 +256,20 @@ class ClaudeMonitorCLI {
             else if (parseFloat(dailyPercent) < 80) coloredDailyBar = Colors.yellow(dailyBar);
             else coloredDailyBar = Colors.red(dailyBar);
             
-            console.log(`   API Messages: [${coloredDailyBar}] ${totals.requestCount}/${dailyLimit} (${dailyPercent}%)\n`);
+            console.log(`   API Messages: [${coloredDailyBar}] ${totals.requestCount}/${dailyLimit} (${dailyPercent}%)`);
+            
+            // Time to hit daily limit
+            if (burnRatePerHour > 0 && totals.requestCount < dailyLimit) {
+                const dailyMessagesRemaining = dailyLimit - totals.requestCount;
+                const hoursToDaily = dailyMessagesRemaining / burnRatePerHour;
+                if (hoursToDaily < 24) {
+                    const timeToDaily = hoursToDaily < 1 
+                        ? `${Math.floor(hoursToDaily * 60)}m`
+                        : `${Math.floor(hoursToDaily)}h ${Math.floor((hoursToDaily % 1) * 60)}m`;
+                    console.log(`   Est. daily limit reached: ${timeToDaily}`);
+                }
+            }
+            console.log();
             
             // Token usage
             console.log(Colors.bright('💰 Token Usage'));
@@ -249,6 +284,18 @@ class ClaudeMonitorCLI {
             }
             console.log();
             
+            // Reset information
+            console.log(Colors.bright('🔄 Reset Information'));
+            const now = new Date();
+            const utcHours = now.getUTCHours();
+            const hoursUntilReset = utcHours < 9 ? 9 - utcHours : 33 - utcHours; // Reset at 9 UTC
+            const resetTime = hoursUntilReset < 1 
+                ? `${Math.floor(hoursUntilReset * 60)}m`
+                : `${Math.floor(hoursUntilReset)}h ${Math.floor((hoursUntilReset % 1) * 60)}m`;
+            console.log(`   Daily limit resets: 09:00 UTC`);
+            console.log(`   Time until reset: ${resetTime}`);
+            console.log();
+            
             // Status
             console.log(Colors.bright('📈 Status'));
             if (parseFloat(dailyPercent) > 90 || parseFloat(windowPercent) > 90) {
@@ -261,7 +308,6 @@ class ClaudeMonitorCLI {
             console.log();
             
             // Footer
-            const now = new Date();
             const timeStr = now.toTimeString().split(' ')[0];
             console.log(Colors.dim(`Last updated: ${timeStr} | Press Ctrl+C to exit`));
         } catch (error) {

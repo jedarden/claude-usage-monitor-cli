@@ -1,6 +1,6 @@
 {
   "name": "claude-usage-cli",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Monitor Claude API usage with zero dependencies",
   "main": "lib/cli.js",
   "bin": {

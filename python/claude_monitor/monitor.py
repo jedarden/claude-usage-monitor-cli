@@ -321,6 +321,21 @@ class ClaudeMonitor:
                   f"({window_pred.get('confidence', 'unknown')} confidence)")
             if 'burn_rate_per_hour' in window_pred:
                 print(f"   Burn rate: {window_pred['burn_rate_per_hour']:.1f} messages/hour")
+            
+            # Time to hit limit prediction
+            if window_pred['burn_rate_per_hour'] > 0 and window_usage < window_limit:
+                messages_remaining = window_limit - window_usage
+                hours_to_limit = messages_remaining / window_pred['burn_rate_per_hour']
+                if hours_to_limit < 24:  # Only show if within 24 hours
+                    if hours_to_limit < 1:
+                        time_to_limit = f"{int(hours_to_limit * 60)}m"
+                    else:
+                        time_to_limit = f"{int(hours_to_limit)}h {int((hours_to_limit % 1) * 60)}m"
+                    print(f"   Est. limit reached: {time_to_limit}")
+        
+        # Window reset time
+        window_reset_time = self.format_time_remaining(timedelta(minutes=300 - current['time_elapsed_minutes']))
+        print(f"   Window resets in: {window_reset_time}")
         
         print()
         
@@ -349,6 +364,17 @@ class ClaudeMonitor:
         daily_pred = predictions.get('daily', {})
         if daily_pred and daily_pred.get('predicted_additional', 0) > 0:
             print(f"   Predicted total: {daily_pred.get('predicted_total', 0)} messages")
+            
+            # Time to hit daily limit prediction
+            if daily_pred.get('burn_rate_per_hour', 0) > 0 and daily_usage < daily_limit:
+                messages_remaining = daily_limit - daily_usage
+                hours_to_limit = messages_remaining / daily_pred['burn_rate_per_hour']
+                if hours_to_limit < 24:  # Only show if within 24 hours
+                    if hours_to_limit < 1:
+                        time_to_limit = f"{int(hours_to_limit * 60)}m"
+                    else:
+                        time_to_limit = f"{int(hours_to_limit)}h {int((hours_to_limit % 1) * 60)}m"
+                    print(f"   Est. daily limit reached: {time_to_limit}")
         
         print()
         
@@ -388,8 +414,8 @@ class ClaudeMonitor:
         print(self.terminal.bold("🔄 Reset Information"))
         next_reset_str = self.timezone_handler.format_datetime(reset_info['next_reset'], '%H:%M %Z')
         time_until_str = self.format_time_remaining(reset_info['time_until'])
-        print(f"   Next reset: {next_reset_str}")
-        print(f"   Time until: {time_until_str}")
+        print(f"   Daily limit resets: {next_reset_str}")
+        print(f"   Time until reset: {time_until_str}")
         
         print()
         
