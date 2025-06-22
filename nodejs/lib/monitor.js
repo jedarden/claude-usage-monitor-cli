@@ -5,12 +5,14 @@
 const { ClaudeDataReader } = require('./utils/claude-data');
 const { TimeZone, DateRange } = require('./utils/timezone');
 const { Colors, Table, Spinner } = require('./utils/terminal');
+const { PlanConfig } = require('./plans');
 
 class ClaudeUsageMonitor {
     constructor(options = {}) {
         this.dataReader = new ClaudeDataReader(options);
         this.timezone = new TimeZone(options.timezone);
         this.verbose = options.verbose || false;
+        this.plan = PlanConfig.getPlan(options.plan || 'pro');
     }
 
     /**

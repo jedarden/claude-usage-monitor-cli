@@ -8,6 +8,7 @@ const { ArgumentParser } = require('./utils/args');
 const { ClaudeUsageMonitor } = require('./monitor');
 const { Colors } = require('./utils/terminal');
 const { TimeZone } = require('./utils/timezone');
+const { PlanConfig } = require('./plans');
 
 class ClaudeMonitorCLI {
     constructor() {
@@ -27,6 +28,13 @@ class ClaudeMonitorCLI {
         this.parser.addCommand('cache');
 
         // Global options
+        this.parser.addOption('plan', {
+            alias: 'p',
+            description: 'Claude plan type (pro, max5, max20, custom)',
+            default: 'pro',
+            choices: PlanConfig.listPlans()
+        });
+
         this.parser.addOption('timezone', {
             alias: 't',
             description: 'Timezone for date formatting',
@@ -57,6 +65,10 @@ class ClaudeMonitorCLI {
             description: 'Include projects with no usage'
         });
 
+        this.parser.addFlag('once', {
+            description: 'Run once and exit (no continuous monitoring)'
+        });
+
         this.parser.addFlag('help', {
             alias: 'h',
             description: 'Show help message'
@@ -68,7 +80,6 @@ class ClaudeMonitorCLI {
 
         // Project-specific options
         this.parser.addOption('project-id', {
-            alias: 'p',
             description: 'Specific project ID to analyze'
         });
     }
@@ -96,6 +107,7 @@ class ClaudeMonitorCLI {
 
             // Create monitor instance
             const monitorOptions = {
+                plan: args.options.plan,
                 timezone: args.options.timezone,
                 verbose: args.options.verbose,
                 baseDir: args.options['config-dir']
@@ -160,7 +172,10 @@ class ClaudeMonitorCLI {
     }
 
     async handleMonitor(monitor, options) {
-        if (!options.quiet) {
+        const args = this.parser.parse(process.argv.slice(2));
+        const isOnce = args.options.once;
+        
+        if (!options.quiet && !isOnce) {
             console.log(Colors.bright('📊 Claude Usage Monitor'));
             console.log(Colors.dim('Real-time monitoring - Press Ctrl+C to exit\n'));
         }
@@ -168,6 +183,11 @@ class ClaudeMonitorCLI {
         try {
             // Initial display
             await this.displayMonitorData(monitor, options);
+            
+            if (isOnce) {
+                // Run once and exit
+                return 0;
+            }
             
             // Set up interval for updates
             const interval = setInterval(async () => {
@@ -197,20 +217,21 @@ class ClaudeMonitorCLI {
             const usageData = monitor.dataReader.getAllUsageData();
             const totals = usageData.totals;
             
-            // Calculate percentages (simplified for now)
-            const dailyLimit = 5000; // Pro plan daily limit
-            const windowLimit = 1000; // Pro plan 5-hour limit
+            // Get plan limits
+            const plan = monitor.plan || PlanConfig.getPlan('pro');
+            const dailyLimit = plan.daily_limit;
+            const windowLimit = plan.limit_per_5h;
             const dailyPercent = (totals.requestCount / dailyLimit * 100).toFixed(1);
             const windowPercent = Math.min((totals.requestCount / 5 / windowLimit * 100), 100).toFixed(1);
             
             // Header
-            console.log(Colors.bright(Colors.cyan('📊 Claude Usage Monitor - Pro Plan')));
+            console.log(Colors.bright(Colors.cyan(`📊 Claude Usage Monitor - ${plan.name}`)));
             console.log(Colors.dim('=================================='));
             
             // Current window
             const barWidth = 30;
-            const windowFilled = Math.floor((parseFloat(windowPercent) / 100) * barWidth);
-            const windowBar = '█'.repeat(windowFilled) + '░'.repeat(barWidth - windowFilled);
+            const windowFilled = Math.min(Math.floor((parseFloat(windowPercent) / 100) * barWidth), barWidth);
+            const windowBar = '█'.repeat(windowFilled) + '░'.repeat(Math.max(0, barWidth - windowFilled));
             
             let coloredWindowBar;
             if (parseFloat(windowPercent) < 50) coloredWindowBar = Colors.green(windowBar);
@@ -241,8 +262,8 @@ class ClaudeMonitorCLI {
             }
             
             // Daily summary
-            const dailyFilled = Math.floor((parseFloat(dailyPercent) / 100) * barWidth);
-            const dailyBar = '█'.repeat(dailyFilled) + '░'.repeat(barWidth - dailyFilled);
+            const dailyFilled = Math.min(Math.floor((parseFloat(dailyPercent) / 100) * barWidth), barWidth);
+            const dailyBar = '█'.repeat(dailyFilled) + '░'.repeat(Math.max(0, barWidth - dailyFilled));
             
             let coloredDailyBar;
             if (parseFloat(dailyPercent) < 50) coloredDailyBar = Colors.green(dailyBar);
@@ -418,11 +439,13 @@ class ClaudeMonitorCLI {
         console.log();
 
         console.log('Options:');
+        console.log('  -p, --plan <plan>       Claude plan (pro, max5, max20, custom)');
         console.log('  -t, --timezone <tz>     Timezone for date formatting (default: system)');
         console.log('  -c, --config-dir <dir>  Claude configuration directory');
-        console.log('  -p, --project-id <id>   Specific project ID to analyze');
+        console.log('  --project-id <id>       Specific project ID to analyze');
         console.log('  -v, --verbose           Verbose output');
         console.log('  -q, --quiet             Quiet mode - minimal output');
+        console.log('  --once                  Run once and exit');
         console.log('  --no-color              Disable colored output');
         console.log('  --include-empty         Include projects with no usage');
         console.log('  -h, --help              Show this help message');
@@ -431,12 +454,12 @@ class ClaudeMonitorCLI {
 
         console.log('Examples:');
         console.log('  claude-usage-cli                    # Real-time monitoring');
+        console.log('  claude-usage-cli --once             # Run once and exit');
+        console.log('  claude-usage-cli --plan max5        # Monitor with Max5 plan');
         console.log('  claude-usage-cli summary            # Show usage summary');
         console.log('  claude-usage-cli projects           # List all projects');
-        console.log('  claude-usage-cli project my-proj   # Show project details');
         console.log('  claude-usage-cli today              # Show today\'s usage');
         console.log('  claude-usage-cli --timezone UTC     # Use UTC timezone');
-        console.log('  claude-usage-cli --quiet summary    # Minimal output');
     }
 
     showVersion() {
