@@ -17,6 +17,7 @@ class ClaudeMonitorCLI {
 
     setupArguments() {
         // Commands
+        this.parser.addCommand('monitor');
         this.parser.addCommand('summary');
         this.parser.addCommand('project');
         this.parser.addCommand('projects');
@@ -103,7 +104,7 @@ class ClaudeMonitorCLI {
             const monitor = new ClaudeUsageMonitor(monitorOptions);
 
             // Handle commands
-            const command = args.command || 'summary';
+            const command = args.command || 'monitor'; // Default to monitor mode
             const commandOptions = {
                 quiet: args.options.quiet,
                 includeEmpty: args.options['include-empty'],
@@ -111,6 +112,9 @@ class ClaudeMonitorCLI {
             };
 
             switch (command) {
+                case 'monitor':
+                    return await this.handleMonitor(monitor, commandOptions);
+                    
                 case 'summary':
                     return await this.handleSummary(monitor, commandOptions);
                 
@@ -153,6 +157,121 @@ class ClaudeMonitorCLI {
             
             return 1;
         }
+    }
+
+    async handleMonitor(monitor, options) {
+        if (!options.quiet) {
+            console.log(Colors.bright('📊 Claude Usage Monitor'));
+            console.log(Colors.dim('Real-time monitoring - Press Ctrl+C to exit\n'));
+        }
+        
+        try {
+            // Initial display
+            await this.displayMonitorData(monitor, options);
+            
+            // Set up interval for updates
+            const interval = setInterval(async () => {
+                // Clear screen
+                process.stdout.write('\x1b[2J\x1b[H');
+                await this.displayMonitorData(monitor, options);
+            }, 5000); // Update every 5 seconds
+            
+            // Handle Ctrl+C gracefully
+            process.on('SIGINT', () => {
+                clearInterval(interval);
+                console.log(Colors.dim('\n\nMonitoring stopped.'));
+                process.exit(0);
+            });
+            
+            // Keep process running
+            await new Promise(() => {});
+            
+        } catch (error) {
+            console.error(Colors.red(`Monitoring error: ${error.message}`));
+            return 1;
+        }
+    }
+    
+    async displayMonitorData(monitor, options) {
+        const usageData = monitor.dataReader.getAllUsageData();
+        const totals = usageData.totals;
+        
+        // Calculate percentages (simplified for now)
+        const dailyLimit = 5000; // Pro plan daily limit
+        const windowLimit = 1000; // Pro plan 5-hour limit
+        const dailyPercent = (totals.requestCount / dailyLimit * 100).toFixed(1);
+        const windowPercent = Math.min((totals.requestCount / 5 / windowLimit * 100), 100).toFixed(1);
+        
+        // Header
+        console.log(Colors.bright(Colors.cyan('📊 Claude Usage Monitor - Pro Plan')));
+        console.log(Colors.dim('==================================\n'));
+        
+        // Current window
+        console.log(Colors.bright('📅 Current 5-Hour Window'));
+        
+        // Progress bar
+        const barWidth = 30;
+        const windowFilled = Math.floor((windowPercent / 100) * barWidth);
+        const windowBar = '█'.repeat(windowFilled) + '░'.repeat(barWidth - windowFilled);
+        
+        let barColor;
+        if (windowPercent < 50) barColor = Colors.green;
+        else if (windowPercent < 80) barColor = Colors.yellow;
+        else barColor = Colors.red;
+        
+        console.log(`   API Messages: [${barColor(windowBar)}] ${Math.floor(totals.requestCount / 5)}/${windowLimit} (${windowPercent}%)`);
+        console.log();
+        
+        // Daily summary
+        console.log(Colors.bright('📊 Daily Summary'));
+        
+        const dailyFilled = Math.floor((dailyPercent / 100) * barWidth);
+        const dailyBar = '█'.repeat(dailyFilled) + '░'.repeat(barWidth - dailyFilled);
+        
+        let dailyBarColor;
+        if (dailyPercent < 50) dailyBarColor = Colors.green;
+        else if (dailyPercent < 80) dailyBarColor = Colors.yellow;
+        else dailyBarColor = Colors.red;
+        
+        console.log(`   API Messages: [${dailyBarColor(dailyBar)}] ${totals.requestCount}/${dailyLimit} (${dailyPercent}%)\n`);
+        
+        // Token usage
+        console.log(Colors.bright('💰 Token Usage'));
+        console.log(`   Total: ${this.formatNumber(totals.totalTokens)}`);
+        console.log(`   Input: ${this.formatNumber(totals.inputTokens)}`);
+        console.log(`   Output: ${this.formatNumber(totals.outputTokens)}`);
+        if (totals.cacheCreationTokens > 0) {
+            console.log(`   Cache Creation: ${this.formatNumber(totals.cacheCreationTokens)}`);
+        }
+        if (totals.cacheReadTokens > 0) {
+            console.log(`   Cache Read: ${this.formatNumber(totals.cacheReadTokens)}`);
+        }
+        console.log();
+        
+        // Status
+        console.log(Colors.bright('📈 Status'));
+        if (dailyPercent > 90 || windowPercent > 90) {
+            console.log(`   ${Colors.red('⚠️  Usage limit nearly exceeded!')}`);
+        } else if (dailyPercent > 75 || windowPercent > 75) {
+            console.log(`   ${Colors.yellow('⚠️  Usage is high')}`);
+        } else {
+            console.log(`   ${Colors.green('✓ Usage within normal limits')}`);
+        }
+        console.log();
+        
+        // Footer
+        const now = new Date();
+        const timeStr = now.toTimeString().split(' ')[0];
+        console.log(Colors.dim(`Last updated: ${timeStr} | Press Ctrl+C to exit`));
+    }
+    
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        }
+        return num.toString();
     }
 
     async handleSummary(monitor, options) {
@@ -270,7 +389,8 @@ class ClaudeMonitorCLI {
         console.log('Usage: claude-usage-cli [options] [command] [args...]\n');
 
         console.log('Commands:');
-        console.log('  summary                 Show overall usage summary (default)');
+        console.log('  monitor                 Real-time usage monitoring (default)');
+        console.log('  summary                 Show overall usage summary');
         console.log('  project <project-id>    Show detailed usage for a specific project');
         console.log('  projects                List all projects with usage');
         console.log('  today                   Show today\'s usage');
@@ -292,7 +412,8 @@ class ClaudeMonitorCLI {
         console.log();
 
         console.log('Examples:');
-        console.log('  claude-usage-cli                    # Show usage summary');
+        console.log('  claude-usage-cli                    # Real-time monitoring');
+        console.log('  claude-usage-cli summary            # Show usage summary');
         console.log('  claude-usage-cli projects           # List all projects');
         console.log('  claude-usage-cli project my-proj   # Show project details');
         console.log('  claude-usage-cli today              # Show today\'s usage');
