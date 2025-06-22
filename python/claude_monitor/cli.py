@@ -433,12 +433,13 @@ def main():
         print(terminal.info("Make sure Claude Desktop is installed and has been used."))
         return 1
     
-    # Run monitoring
+    # Run monitoring (default to monitor mode unless --once is specified)
     try:
         if args.once:
             success = monitor.run_once()
             return 0 if success else 1
         else:
+            # Default to monitor mode
             monitor.run()
             return 0
     except KeyboardInterrupt:
