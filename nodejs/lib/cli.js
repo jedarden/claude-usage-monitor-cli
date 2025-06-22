@@ -193,76 +193,81 @@ class ClaudeMonitorCLI {
     }
     
     async displayMonitorData(monitor, options) {
-        const usageData = monitor.dataReader.getAllUsageData();
-        const totals = usageData.totals;
-        
-        // Calculate percentages (simplified for now)
-        const dailyLimit = 5000; // Pro plan daily limit
-        const windowLimit = 1000; // Pro plan 5-hour limit
-        const dailyPercent = (totals.requestCount / dailyLimit * 100).toFixed(1);
-        const windowPercent = Math.min((totals.requestCount / 5 / windowLimit * 100), 100).toFixed(1);
-        
-        // Header
-        console.log(Colors.bright(Colors.cyan('📊 Claude Usage Monitor - Pro Plan')));
-        console.log(Colors.dim('==================================\n'));
-        
-        // Current window
-        console.log(Colors.bright('📅 Current 5-Hour Window'));
-        
-        // Progress bar
-        const barWidth = 30;
-        const windowFilled = Math.floor((windowPercent / 100) * barWidth);
-        const windowBar = '█'.repeat(windowFilled) + '░'.repeat(barWidth - windowFilled);
-        
-        let barColor;
-        if (windowPercent < 50) barColor = Colors.green;
-        else if (windowPercent < 80) barColor = Colors.yellow;
-        else barColor = Colors.red;
-        
-        console.log(`   API Messages: [${barColor(windowBar)}] ${Math.floor(totals.requestCount / 5)}/${windowLimit} (${windowPercent}%)`);
-        console.log();
-        
-        // Daily summary
-        console.log(Colors.bright('📊 Daily Summary'));
-        
-        const dailyFilled = Math.floor((dailyPercent / 100) * barWidth);
-        const dailyBar = '█'.repeat(dailyFilled) + '░'.repeat(barWidth - dailyFilled);
-        
-        let dailyBarColor;
-        if (dailyPercent < 50) dailyBarColor = Colors.green;
-        else if (dailyPercent < 80) dailyBarColor = Colors.yellow;
-        else dailyBarColor = Colors.red;
-        
-        console.log(`   API Messages: [${dailyBarColor(dailyBar)}] ${totals.requestCount}/${dailyLimit} (${dailyPercent}%)\n`);
-        
-        // Token usage
-        console.log(Colors.bright('💰 Token Usage'));
-        console.log(`   Total: ${this.formatNumber(totals.totalTokens)}`);
-        console.log(`   Input: ${this.formatNumber(totals.inputTokens)}`);
-        console.log(`   Output: ${this.formatNumber(totals.outputTokens)}`);
-        if (totals.cacheCreationTokens > 0) {
-            console.log(`   Cache Creation: ${this.formatNumber(totals.cacheCreationTokens)}`);
+        try {
+            const usageData = monitor.dataReader.getAllUsageData();
+            const totals = usageData.totals;
+            
+            // Calculate percentages (simplified for now)
+            const dailyLimit = 5000; // Pro plan daily limit
+            const windowLimit = 1000; // Pro plan 5-hour limit
+            const dailyPercent = (totals.requestCount / dailyLimit * 100).toFixed(1);
+            const windowPercent = Math.min((totals.requestCount / 5 / windowLimit * 100), 100).toFixed(1);
+            
+            // Header
+            console.log(Colors.bright(Colors.cyan('📊 Claude Usage Monitor - Pro Plan')));
+            console.log(Colors.dim('==================================\n'));
+            
+            // Current window
+            console.log(Colors.bright('📅 Current 5-Hour Window'));
+            
+            // Progress bar
+            const barWidth = 30;
+            const windowFilled = Math.floor((parseFloat(windowPercent) / 100) * barWidth);
+            const windowBar = '█'.repeat(windowFilled) + '░'.repeat(barWidth - windowFilled);
+            
+            let coloredWindowBar;
+            if (parseFloat(windowPercent) < 50) coloredWindowBar = Colors.green(windowBar);
+            else if (parseFloat(windowPercent) < 80) coloredWindowBar = Colors.yellow(windowBar);
+            else coloredWindowBar = Colors.red(windowBar);
+            
+            console.log(`   API Messages: [${coloredWindowBar}] ${Math.floor(totals.requestCount / 5)}/${windowLimit} (${windowPercent}%)`);
+            console.log();
+            
+            // Daily summary
+            console.log(Colors.bright('📊 Daily Summary'));
+            
+            const dailyFilled = Math.floor((parseFloat(dailyPercent) / 100) * barWidth);
+            const dailyBar = '█'.repeat(dailyFilled) + '░'.repeat(barWidth - dailyFilled);
+            
+            let coloredDailyBar;
+            if (parseFloat(dailyPercent) < 50) coloredDailyBar = Colors.green(dailyBar);
+            else if (parseFloat(dailyPercent) < 80) coloredDailyBar = Colors.yellow(dailyBar);
+            else coloredDailyBar = Colors.red(dailyBar);
+            
+            console.log(`   API Messages: [${coloredDailyBar}] ${totals.requestCount}/${dailyLimit} (${dailyPercent}%)\n`);
+            
+            // Token usage
+            console.log(Colors.bright('💰 Token Usage'));
+            console.log(`   Total: ${this.formatNumber(totals.totalTokens)}`);
+            console.log(`   Input: ${this.formatNumber(totals.inputTokens)}`);
+            console.log(`   Output: ${this.formatNumber(totals.outputTokens)}`);
+            if (totals.cacheCreationTokens > 0) {
+                console.log(`   Cache Creation: ${this.formatNumber(totals.cacheCreationTokens)}`);
+            }
+            if (totals.cacheReadTokens > 0) {
+                console.log(`   Cache Read: ${this.formatNumber(totals.cacheReadTokens)}`);
+            }
+            console.log();
+            
+            // Status
+            console.log(Colors.bright('📈 Status'));
+            if (parseFloat(dailyPercent) > 90 || parseFloat(windowPercent) > 90) {
+                console.log(`   ${Colors.red('⚠️  Usage limit nearly exceeded!')}`);
+            } else if (parseFloat(dailyPercent) > 75 || parseFloat(windowPercent) > 75) {
+                console.log(`   ${Colors.yellow('⚠️  Usage is high')}`);
+            } else {
+                console.log(`   ${Colors.green('✓ Usage within normal limits')}`);
+            }
+            console.log();
+            
+            // Footer
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            console.log(Colors.dim(`Last updated: ${timeStr} | Press Ctrl+C to exit`));
+        } catch (error) {
+            console.error('Error in displayMonitorData:', error);
+            throw error;
         }
-        if (totals.cacheReadTokens > 0) {
-            console.log(`   Cache Read: ${this.formatNumber(totals.cacheReadTokens)}`);
-        }
-        console.log();
-        
-        // Status
-        console.log(Colors.bright('📈 Status'));
-        if (dailyPercent > 90 || windowPercent > 90) {
-            console.log(`   ${Colors.red('⚠️  Usage limit nearly exceeded!')}`);
-        } else if (dailyPercent > 75 || windowPercent > 75) {
-            console.log(`   ${Colors.yellow('⚠️  Usage is high')}`);
-        } else {
-            console.log(`   ${Colors.green('✓ Usage within normal limits')}`);
-        }
-        console.log();
-        
-        // Footer
-        const now = new Date();
-        const timeStr = now.toTimeString().split(' ')[0];
-        console.log(Colors.dim(`Last updated: ${timeStr} | Press Ctrl+C to exit`));
     }
     
     formatNumber(num) {
