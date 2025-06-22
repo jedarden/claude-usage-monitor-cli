@@ -205,12 +205,9 @@ class ClaudeMonitorCLI {
             
             // Header
             console.log(Colors.bright(Colors.cyan('📊 Claude Usage Monitor - Pro Plan')));
-            console.log(Colors.dim('==================================\n'));
+            console.log(Colors.dim('=================================='));
             
             // Current window
-            console.log(Colors.bright('📅 Current 5-Hour Window'));
-            
-            // Progress bar
             const barWidth = 30;
             const windowFilled = Math.floor((parseFloat(windowPercent) / 100) * barWidth);
             const windowBar = '█'.repeat(windowFilled) + '░'.repeat(barWidth - windowFilled);
@@ -221,12 +218,13 @@ class ClaudeMonitorCLI {
             else coloredWindowBar = Colors.red(windowBar);
             
             const currentWindowMessages = Math.floor(totals.requestCount / 5);
-            console.log(`   API Messages: [${coloredWindowBar}] ${currentWindowMessages}/${windowLimit} (${windowPercent}%)`);
+            console.log(`\n${Colors.bright('5-Hour Window')}`);
+            console.log(`[${coloredWindowBar}] ${currentWindowMessages}/${windowLimit} (${windowPercent}%) • Resets in ~5h`);
             
             // Calculate burn rate and predictions
             const burnRatePerHour = totals.requestCount / 24; // Simplified: total requests over 24 hours
             if (burnRatePerHour > 0) {
-                console.log(`   Burn rate: ${burnRatePerHour.toFixed(1)} messages/hour`);
+                let burnInfo = `Burn rate: ${burnRatePerHour.toFixed(1)}/hr`;
                 
                 // Time to hit window limit
                 if (currentWindowMessages < windowLimit) {
@@ -236,18 +234,13 @@ class ClaudeMonitorCLI {
                         const timeToLimit = hoursToLimit < 1 
                             ? `${Math.floor(hoursToLimit * 60)}m`
                             : `${Math.floor(hoursToLimit)}h ${Math.floor((hoursToLimit % 1) * 60)}m`;
-                        console.log(`   Est. limit reached: ${timeToLimit}`);
+                        burnInfo += ` • Limit in ${timeToLimit}`;
                     }
                 }
+                console.log(burnInfo);
             }
             
-            // Window reset time (approximately 5 hours from start)
-            console.log(`   Window resets in: ~5h`);
-            console.log();
-            
             // Daily summary
-            console.log(Colors.bright('📊 Daily Summary'));
-            
             const dailyFilled = Math.floor((parseFloat(dailyPercent) / 100) * barWidth);
             const dailyBar = '█'.repeat(dailyFilled) + '░'.repeat(barWidth - dailyFilled);
             
@@ -256,60 +249,34 @@ class ClaudeMonitorCLI {
             else if (parseFloat(dailyPercent) < 80) coloredDailyBar = Colors.yellow(dailyBar);
             else coloredDailyBar = Colors.red(dailyBar);
             
-            console.log(`   API Messages: [${coloredDailyBar}] ${totals.requestCount}/${dailyLimit} (${dailyPercent}%)`);
+            console.log(`\n${Colors.bright('Daily Total')}`);
+            console.log(`[${coloredDailyBar}] ${totals.requestCount}/${dailyLimit} (${dailyPercent}%)`);
             
-            // Time to hit daily limit
-            if (burnRatePerHour > 0 && totals.requestCount < dailyLimit) {
-                const dailyMessagesRemaining = dailyLimit - totals.requestCount;
-                const hoursToDaily = dailyMessagesRemaining / burnRatePerHour;
-                if (hoursToDaily < 24) {
-                    const timeToDaily = hoursToDaily < 1 
-                        ? `${Math.floor(hoursToDaily * 60)}m`
-                        : `${Math.floor(hoursToDaily)}h ${Math.floor((hoursToDaily % 1) * 60)}m`;
-                    console.log(`   Est. daily limit reached: ${timeToDaily}`);
-                }
-            }
-            console.log();
-            
-            // Token usage
-            console.log(Colors.bright('💰 Token Usage'));
-            console.log(`   Total: ${this.formatNumber(totals.totalTokens)}`);
-            console.log(`   Input: ${this.formatNumber(totals.inputTokens)}`);
-            console.log(`   Output: ${this.formatNumber(totals.outputTokens)}`);
-            if (totals.cacheCreationTokens > 0) {
-                console.log(`   Cache Creation: ${this.formatNumber(totals.cacheCreationTokens)}`);
-            }
-            if (totals.cacheReadTokens > 0) {
-                console.log(`   Cache Read: ${this.formatNumber(totals.cacheReadTokens)}`);
-            }
-            console.log();
-            
-            // Reset information
-            console.log(Colors.bright('🔄 Reset Information'));
+            // Reset info
             const now = new Date();
             const utcHours = now.getUTCHours();
             const hoursUntilReset = utcHours < 9 ? 9 - utcHours : 33 - utcHours; // Reset at 9 UTC
             const resetTime = hoursUntilReset < 1 
                 ? `${Math.floor(hoursUntilReset * 60)}m`
                 : `${Math.floor(hoursUntilReset)}h ${Math.floor((hoursUntilReset % 1) * 60)}m`;
-            console.log(`   Daily limit resets: 09:00 UTC`);
-            console.log(`   Time until reset: ${resetTime}`);
-            console.log();
+            console.log(`Resets at 09:00 UTC (${resetTime})`);
+            
+            // Tokens (compact)
+            console.log(`\n${Colors.bright('Tokens:')} ${this.formatNumber(totals.totalTokens)} total • ${this.formatNumber(totals.outputTokens)} out • ${this.formatNumber(totals.cacheReadTokens)} cache`);
             
             // Status
-            console.log(Colors.bright('📈 Status'));
+            process.stdout.write(`\n${Colors.bright('Status:')} `);
             if (parseFloat(dailyPercent) > 90 || parseFloat(windowPercent) > 90) {
-                console.log(`   ${Colors.red('⚠️  Usage limit nearly exceeded!')}`);
+                console.log(Colors.red('⚠️  Limit approaching!'));
             } else if (parseFloat(dailyPercent) > 75 || parseFloat(windowPercent) > 75) {
-                console.log(`   ${Colors.yellow('⚠️  Usage is high')}`);
+                console.log(Colors.yellow('Usage high'));
             } else {
-                console.log(`   ${Colors.green('✓ Usage within normal limits')}`);
+                console.log(Colors.green('✓ Normal'));
             }
-            console.log();
             
             // Footer
             const timeStr = now.toTimeString().split(' ')[0];
-            console.log(Colors.dim(`Last updated: ${timeStr} | Press Ctrl+C to exit`));
+            console.log(`\n${Colors.dim(`Updated: ${timeStr} • Ctrl+C to exit`)}`);
         } catch (error) {
             console.error('Error in displayMonitorData:', error);
             throw error;

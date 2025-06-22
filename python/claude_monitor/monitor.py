@@ -283,16 +283,13 @@ class ClaudeMonitor:
         header = f"📊 Claude Usage Monitor - {plan['name']}"
         print(self.terminal.bold(self.terminal.cyan(header)))
         print(self.terminal.dim("=" * len(header)))
-        print()
         
         # Current 5-hour window
         window_usage = current['conversations']
         window_limit = current['limit']
         window_percent = (window_usage / window_limit * 100) if window_limit > 0 else 0
         
-        print(self.terminal.bold("📅 Current 5-Hour Window"))
-        print(f"   Period: {self.timezone_handler.format_datetime(current['start'], '%H:%M')} - "
-              f"{self.timezone_handler.format_datetime(current['end'], '%H:%M')}")
+        print(f"\n{self.terminal.bold('5-Hour Window')} ({self.timezone_handler.format_datetime(current['start'], '%H:%M')}-{self.timezone_handler.format_datetime(current['end'], '%H:%M')})")
         
         # Usage bar for current window
         bar_width = 30
@@ -306,45 +303,34 @@ class ClaudeMonitor:
         else:
             colored_bar = self.terminal.red(bar)
         
-        print(f"   API Messages: [{colored_bar}] {window_usage}/{window_limit} "
-              f"({window_percent:.1f}%)")
-        
-        # Time elapsed
-        elapsed_time = self.format_time_remaining(timedelta(minutes=current['time_elapsed_minutes']))
         remaining_time = self.format_time_remaining(timedelta(minutes=300 - current['time_elapsed_minutes']))
-        print(f"   Time:  {elapsed_time} elapsed, {remaining_time} remaining")
+        print(f"[{colored_bar}] {window_usage}/{window_limit} ({window_percent:.1f}%) • Resets in {remaining_time}")
         
         # Predictions for current window
         window_pred = predictions.get('window', {})
-        if window_pred and window_pred.get('predicted_additional', 0) > 0:
-            print(f"   Prediction: {window_pred['predicted_total']:.1f} total messages "
-                  f"({window_pred.get('confidence', 'unknown')} confidence)")
-            if 'burn_rate_per_hour' in window_pred:
-                print(f"   Burn rate: {window_pred['burn_rate_per_hour']:.1f} messages/hour")
+        if window_pred and window_pred.get('burn_rate_per_hour', 0) > 0:
+            burn_rate = window_pred['burn_rate_per_hour']
+            print(f"Burn rate: {burn_rate:.1f}/hr", end="")
             
             # Time to hit limit prediction
-            if window_pred['burn_rate_per_hour'] > 0 and window_usage < window_limit:
+            if burn_rate > 0 and window_usage < window_limit:
                 messages_remaining = window_limit - window_usage
-                hours_to_limit = messages_remaining / window_pred['burn_rate_per_hour']
+                hours_to_limit = messages_remaining / burn_rate
                 if hours_to_limit < 24:  # Only show if within 24 hours
                     if hours_to_limit < 1:
                         time_to_limit = f"{int(hours_to_limit * 60)}m"
                     else:
                         time_to_limit = f"{int(hours_to_limit)}h {int((hours_to_limit % 1) * 60)}m"
-                    print(f"   Est. limit reached: {time_to_limit}")
-        
-        # Window reset time
-        window_reset_time = self.format_time_remaining(timedelta(minutes=300 - current['time_elapsed_minutes']))
-        print(f"   Window resets in: {window_reset_time}")
-        
-        print()
+                    print(f" • Limit in {time_to_limit}")
+            else:
+                print()
         
         # Daily summary
         daily_usage = daily['total_conversations']
         daily_limit = daily['limit']
         daily_percent = (daily_usage / daily_limit * 100) if daily_limit > 0 else 0
         
-        print(self.terminal.bold("📊 Daily Summary"))
+        print(f"\n{self.terminal.bold('Daily Total')}")
         
         # Daily usage bar
         daily_filled = int((daily_usage / daily_limit) * bar_width) if daily_limit > 0 else 0
@@ -357,94 +343,36 @@ class ClaudeMonitor:
         else:
             colored_daily_bar = self.terminal.red(daily_bar)
         
-        print(f"   API Messages: [{colored_daily_bar}] {daily_usage}/{daily_limit} "
-              f"({daily_percent:.1f}%)")
+        print(f"[{colored_daily_bar}] {daily_usage}/{daily_limit} ({daily_percent:.1f}%)")
         
-        # Daily prediction
-        daily_pred = predictions.get('daily', {})
-        if daily_pred and daily_pred.get('predicted_additional', 0) > 0:
-            print(f"   Predicted total: {daily_pred.get('predicted_total', 0)} messages")
-            
-            # Time to hit daily limit prediction
-            if daily_pred.get('burn_rate_per_hour', 0) > 0 and daily_usage < daily_limit:
-                messages_remaining = daily_limit - daily_usage
-                hours_to_limit = messages_remaining / daily_pred['burn_rate_per_hour']
-                if hours_to_limit < 24:  # Only show if within 24 hours
-                    if hours_to_limit < 1:
-                        time_to_limit = f"{int(hours_to_limit * 60)}m"
-                    else:
-                        time_to_limit = f"{int(hours_to_limit)}h {int((hours_to_limit % 1) * 60)}m"
-                    print(f"   Est. daily limit reached: {time_to_limit}")
-        
-        print()
-        
-        # Recent activity blocks
-        if daily['blocks']:
-            print(self.terminal.bold("📈 Recent Activity (5-hour blocks)"))
-            
-            # Table header
-            headers = ["Time", "Messages", "Tokens", "Status"]
-            widths = [15, 13, 13, 12]
-            header_row = create_table_row(headers, widths)
-            print(f"   {self.terminal.dim(header_row)}")
-            print(f"   {self.terminal.dim('-' * sum(widths))}")
-            
-            # Show recent blocks (max 5)
-            for block in daily['blocks'][:5]:
-                time_str = self.timezone_handler.format_datetime(block['block_start'], '%H:%M')
-                conversations = block['conversation_count']
-                tokens = format_number(block['total_tokens'])
-                
-                # Status indicator
-                if conversations == 0:
-                    status = self.terminal.dim("Inactive")
-                elif conversations < window_limit * 0.5:
-                    status = self.terminal.green("Light")
-                elif conversations < window_limit * 0.8:
-                    status = self.terminal.yellow("Moderate")
-                else:
-                    status = self.terminal.red("Heavy")
-                
-                row = create_table_row([time_str, conversations, tokens, status], widths)
-                print(f"   {row}")
-        
-        print()
-        
-        # Reset information
-        print(self.terminal.bold("🔄 Reset Information"))
+        # Daily reset info on same line
         next_reset_str = self.timezone_handler.format_datetime(reset_info['next_reset'], '%H:%M %Z')
         time_until_str = self.format_time_remaining(reset_info['time_until'])
-        print(f"   Daily limit resets: {next_reset_str}")
-        print(f"   Time until reset: {time_until_str}")
+        print(f"Resets at {next_reset_str} ({time_until_str})")
         
-        print()
+        # Recent activity - compact format
+        if daily['blocks'] and len(daily['blocks']) > 1:
+            print(f"\n{self.terminal.bold('Recent:')}", end=" ")
+            recent_blocks = daily['blocks'][:3]
+            block_strs = []
+            for block in recent_blocks:
+                time_str = self.timezone_handler.format_datetime(block['block_start'], '%H:%M')
+                msgs = block['conversation_count']
+                block_strs.append(f"{time_str}:{msgs}")
+            print(" | ".join(block_strs))
         
-        # Status and warnings
-        status_messages = []
-        
-        if window_percent > 90:
-            status_messages.append(self.terminal.error("Window limit nearly exceeded!"))
-        elif window_percent > 75:
-            status_messages.append(self.terminal.warning("Window usage high"))
-        
-        if daily_percent > 90:
-            status_messages.append(self.terminal.error("Daily limit nearly exceeded!"))
-        elif daily_percent > 75:
-            status_messages.append(self.terminal.warning("Daily usage high"))
-        
-        if not status_messages:
-            status_messages.append(self.terminal.success("Usage within normal limits"))
-        
-        for message in status_messages:
-            print(f"   {message}")
-        
-        print()
+        # Status
+        print(f"\n{self.terminal.bold('Status:')}", end=" ")
+        if window_percent > 90 or daily_percent > 90:
+            print(self.terminal.red("⚠️  Limit approaching!"))
+        elif window_percent > 75 or daily_percent > 75:
+            print(self.terminal.yellow("Usage high"))
+        else:
+            print(self.terminal.green("✓ Normal"))
         
         # Footer
         last_update = self.timezone_handler.format_datetime(usage_data['last_update'], '%H:%M:%S')
-        print(self.terminal.dim(f"Last updated: {last_update} | "
-                               f"Timezone: {usage_data['timezone']['name']} | "
-                               f"Press Ctrl+C to exit"))
+        print(f"\n{self.terminal.dim(f'Updated: {last_update} • Ctrl+C to exit')}")
     
     def run_once(self) -> bool:
         """Run monitoring once and return success status."""
